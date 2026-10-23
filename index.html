@@ -1,0 +1,1592 @@
+<!doctype html>
+<html lang="vi"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Guitar Lên Tay</title>
+<meta name="theme-color" content="#9A6200">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one narrow practice column, sticky tab rail, fretboard grids scroll sideways inside their own box */
+:root{
+  --bg:#EDF0F2; --surface:#FFFFFF; --sunk:#E2E7EB; --ink:#16202A; --muted:#5A6672; --line:#CFD6DD;
+  --accent:#9A6200; --accent-soft:#F5E6C8; --accent-ink:#FFFFFF;
+  --good:#2E7D4F; --good-soft:#DCEFE3; --bad:#B23A2E; --bad-soft:#F6DEDA;
+  --wood:#3B2A20; --fret:#B9A27A; --string:#C9B48C;
+  --f-display:"Bricolage Grotesque","Be Vietnam Pro",system-ui,sans-serif;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161B; --surface:#1A2129; --sunk:#232B35; --ink:#E6EAEE; --muted:#9AA6B2; --line:#2F3944;
+  --accent:#E3A53C; --accent-soft:#3A2E17; --accent-ink:#1A1206;
+  --good:#5CC48A; --good-soft:#163024; --bad:#EE7A6C; --bad-soft:#3A1E1B;
+  --wood:#2A1D16; --fret:#8C7853; --string:#A8946C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161B; --surface:#1A2129; --sunk:#232B35; --ink:#E6EAEE; --muted:#9AA6B2; --line:#2F3944;
+  --accent:#E3A53C; --accent-soft:#3A2E17; --accent-ink:#1A1206;
+  --good:#5CC48A; --good-soft:#163024; --bad:#EE7A6C; --bad-soft:#3A1E1B;
+  --wood:#2A1D16; --fret:#8C7853; --string:#A8946C; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,7vw,44px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:22px;font-weight:800}
+h3{font-size:17px;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+
+header.top{padding-block:28px 18px;display:grid;gap:10px}
+.goal-row{display:flex;flex-wrap:wrap;gap:8px}
+.goal{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--sunk);color:var(--ink)}
+.goal b{color:var(--accent)}
+
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;
+  padding-block:8px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+nav.tabs button{flex:0 0 auto;font:600 14px var(--f-body);color:var(--muted);background:none;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+section.view{padding-top:22px;display:grid;gap:18px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:10px;min-width:0}
+.lead{font-size:16px;max-width:62ch}
+button.btn{font:600 14px var(--f-body);border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 14px;cursor:pointer}
+button.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button.btn:focus-visible,nav.tabs button:focus-visible,.opt:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select,input[type=number]{font:500 14px var(--f-body);padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+label.inline{display:flex;gap:6px;align-items:center;font-size:14px}
+
+/* Diagnosis */
+.prob{display:grid;grid-template-columns:auto 1fr;gap:4px 12px}
+.prob .sev{grid-row:span 4;width:6px;border-radius:3px;background:var(--accent)}
+.prob .sev.hi{background:var(--bad)}
+.prob dl{margin:0;display:grid;gap:6px}
+.prob dt{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.prob dd{margin:0}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--ink)}
+.pill.hi{background:var(--bad-soft)}
+.check-list{display:grid;gap:6px}
+.check-list label{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;cursor:pointer}
+.check-list input{margin-top:4px;accent-color:var(--accent);width:17px;height:17px;flex:0 0 auto}
+.result{padding:12px 14px;border-radius:10px;background:var(--accent-soft)}
+
+/* Roadmap */
+.overall{display:grid;gap:8px}
+.bar{height:8px;border-radius:4px;background:var(--sunk);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.phase{border-left:3px solid var(--line);padding-left:14px;display:grid;gap:10px}
+.phase.done{border-left-color:var(--good)}
+.phase.current{border-left-color:var(--accent)}
+.phase-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.task{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:8px;background:var(--sunk);cursor:pointer}
+.task input{margin-top:4px;accent-color:var(--good);width:17px;height:17px;flex:0 0 auto}
+.task.on span{color:var(--muted);text-decoration:line-through}
+.task small{display:block;color:var(--muted);font-size:12.5px;text-decoration:none}
+.test{font-size:14px;padding:10px 12px;border:1px dashed var(--accent);border-radius:8px}
+.session{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.slot{background:var(--sunk);border-radius:8px;padding:10px}
+.slot .mono{font-size:20px;font-weight:700;color:var(--accent)}
+.days{display:grid;grid-template-columns:repeat(14,1fr);gap:4px}
+.days i{aspect-ratio:1;border-radius:4px;background:var(--sunk);max-width:100%}
+.days i.on{background:var(--good)}
+.days i.today{outline:2px solid var(--accent);outline-offset:1px}
+
+/* Ear */
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.opt{font:600 15px var(--f-body);padding:12px 8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.opt small{display:block;font:500 12px var(--f-mono);color:var(--muted)}
+.opt.right{background:var(--good-soft);border-color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:600 13px var(--f-body);padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.score{display:flex;gap:16px;font-size:14px}
+.score b{font-family:var(--f-mono);font-size:18px}
+.feedback{min-height:24px;font-weight:600}
+.feedback.ok{color:var(--good)} .feedback.no{color:var(--bad)}
+
+/* Tools */
+.metro-big{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.bpm{font:800 52px var(--f-display);line-height:1;font-variant-numeric:tabular-nums}
+.beats{display:flex;gap:8px}
+.beats i{width:18px;height:18px;border-radius:50%;background:var(--sunk);transition:background .05s}
+.beats i.on{background:var(--accent)}
+.beats i.on.first{background:var(--bad)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.chord-now{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.chord-now .big{font:800 64px var(--f-display);line-height:1;letter-spacing:-.02em}
+.chord-now .deg{font:700 20px var(--f-mono);color:var(--accent)}
+.chord-now .next{color:var(--muted);font-size:14px}
+.tbl-wrap{overflow-x:auto}
+table.keys{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+table.keys th,table.keys td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+table.keys th{font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+table.keys td.k{font-family:var(--f-display);font-weight:800}
+table.keys td.hl{background:var(--accent-soft);font-weight:700}
+
+/* Fretboard */
+.fb-wrap{overflow-x:auto;border-radius:10px;-webkit-overflow-scrolling:touch}
+.fb{display:grid;background:var(--wood);border-radius:10px;padding:6px 4px 4px;min-width:640px;position:relative}
+.fb .cell{position:relative;height:30px;display:flex;align-items:center;justify-content:center;border-right:2px solid var(--fret);cursor:pointer}
+.fb .cell.nut{border-right:5px solid #E8E2D4}
+.fb .cell::before{content:"";position:absolute;left:0;right:0;top:50%;height:var(--sw,1px);background:var(--string);transform:translateY(-50%)}
+.fb .dot{position:relative;z-index:1;min-width:24px;height:24px;padding:0 4px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font:700 11px var(--f-mono);background:#EDE7DA;color:#2A1D16}
+.fb .dot.root{background:var(--accent);color:var(--accent-ink)}
+.fb .dot.target{background:#F2C14E;color:#2A1D16;box-shadow:0 0 0 3px rgba(242,193,78,.4)}
+.fb .dot.ghost{background:transparent;color:#EDE7DA;opacity:.55}
+.fb .lbl{height:20px;font:600 11px var(--f-mono);color:#CDBFA6;display:flex;align-items:center;justify-content:center}
+.fb .sname{font:700 11px var(--f-mono);color:#CDBFA6;display:flex;align-items:center;justify-content:center;height:30px}
+.notes12{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.notes12 .opt{padding:10px 4px}
+@media (max-width:420px){.notes12{grid-template-columns:repeat(4,1fr)}.chord-now .big{font-size:52px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ---------- Thầy ---------- */
+.small{font-size:13px}
+.bad{color:var(--bad)}
+.chip{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+.chip.ok{background:var(--good-soft);color:var(--good)}
+.chip.warn{background:var(--accent-soft);color:var(--ink)}
+.teacher{border-color:var(--accent)}
+.t-head{display:flex;gap:12px;align-items:flex-start}
+.t-head p{font-size:15.5px;min-width:0}
+.avatar{flex:0 0 auto;width:40px;height:44px;display:flex;align-items:center;justify-content:center;font:800 20px var(--f-display);
+  color:var(--accent-ink);background:var(--accent);border-radius:50% 50% 50% 50% / 38% 38% 62% 62%}
+.lesson-group{display:grid;gap:6px}
+.lesson-row{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;font:500 15px var(--f-body);
+  color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer}
+.lesson-row:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.back{justify-self:start;padding:6px 10px;font-size:13px}
+.btn.big{padding:13px 18px;font-size:16px}
+.btn:disabled{opacity:.5;cursor:default}
+.lesson-top{display:grid;gap:2px}
+.steps{margin:0;padding-left:20px;display:grid;gap:14px}
+.steps li{display:grid;gap:8px}
+.meter{flex:1 1 120px;height:10px;background:var(--sunk);border-radius:5px;overflow:hidden;min-width:100px}
+.meter i{display:block;height:100%;width:0;background:var(--good);transition:width .08s}
+.listen{min-height:24px;font-weight:600;display:flex;gap:8px;align-items:center}
+.pulse{width:12px;height:12px;border-radius:50%;background:var(--bad);animation:pl 1s infinite}
+@keyframes pl{0%,100%{opacity:1}50%{opacity:.25}}
+.ex-chord{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.ex-chord svg{max-width:100%;height:auto}
+.ex-side{display:grid;gap:10px;flex:1 1 200px;min-width:0}
+.big-chord{font:800 54px var(--f-display);line-height:1;letter-spacing:-.02em}
+.ex-change{display:grid;gap:12px}
+.ex-change .now{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.beats4{display:flex;gap:10px}
+.beats4 i{width:22px;height:22px;border-radius:50%;background:var(--sunk)}
+.beats4 i:first-child{box-shadow:inset 0 0 0 2px var(--accent)}
+.beats4 i.on{background:var(--accent)}
+.mini-diagrams{display:flex;gap:4px;flex-wrap:wrap}
+.mini-diagrams svg{width:96px;height:auto}
+.verdict{font:800 22px var(--f-display)}
+.verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
+.tips{margin:0;padding-left:20px;display:grid;gap:6px}
+.timing{display:flex;flex-wrap:wrap;gap:3px;align-items:center;padding:10px 0;overflow:hidden}
+.timing i{width:10px;height:26px;border-radius:3px;background:var(--good);transform:translateY(calc(var(--o) * 10px))}
+.timing i.late,.timing i.early{background:var(--accent)}
+.timing i.miss{background:var(--line)}
+.timing b{width:1px;height:30px;background:var(--line);margin:0 3px}
+.tabline{display:flex;flex-wrap:wrap;gap:6px}
+.tn{display:grid;justify-items:center;min-width:44px;padding:6px 4px;border-radius:8px;background:var(--sunk);border:1px solid transparent}
+.tn b{font:700 20px var(--f-mono)}
+.tn small{font-size:11px;color:var(--muted)}
+.tn.cur{border-color:var(--accent);background:var(--accent-soft)}
+.tn.ok{background:var(--good-soft)} .tn.bad{background:var(--bad-soft);border-color:var(--bad)}
+.notes-res{display:flex;flex-wrap:wrap;gap:6px}
+.notes-res span{display:grid;padding:6px 10px;border-radius:8px;background:var(--sunk)}
+.notes-res span.ok{background:var(--good-soft)} .notes-res span.bad{background:var(--bad-soft)}
+.notes-res small{font-size:12px;color:var(--muted)}
+.tuner{display:grid;gap:8px;justify-items:center;padding:8px 0}
+.t-note{font:800 30px var(--f-display)}
+.t-scale{position:relative;width:100%;max-width:360px;height:34px;border-radius:8px;
+  background:linear-gradient(90deg,var(--bad-soft),var(--sunk) 40%,var(--good-soft) 47%,var(--good-soft) 53%,var(--sunk) 60%,var(--bad-soft))}
+.t-scale b{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--good)}
+.t-scale i{position:absolute;top:-4px;bottom:-4px;left:50%;width:4px;margin-left:-2px;border-radius:2px;background:var(--bad);transition:left .1s}
+.t-scale i.in{background:var(--good)}
+.t-cents{font-size:15px}
+.strings{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.strings span{display:grid;justify-items:center;width:46px;padding:6px 0;border-radius:8px;background:var(--sunk);font:700 16px var(--f-mono)}
+.strings span small{font-size:11px;color:var(--muted)}
+.strings span.ok{background:var(--good-soft);color:var(--good)}
+.bend-meter{position:relative;height:16px;border-radius:8px;background:var(--sunk);overflow:visible}
+.bend-meter i{display:block;height:100%;width:0;border-radius:8px;background:var(--accent);transition:width .3s}
+.bend-meter b{position:absolute;top:-5px;bottom:-5px;width:3px;background:var(--good)}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+.mini-diagrams figure{margin:0;display:grid;justify-items:center}
+.mini-diagrams figcaption{font:800 16px var(--f-display)}
+</style>
+</head><body>
+<div class="wrap">
+<header class="top">
+  <span class="eyebrow">Lộ trình 24 tuần · 30–45 phút mỗi ngày</span>
+  <h1>Guitar Lên Tay</h1>
+  <p class="lead muted">Từ “nhìn tab đệm hát” đến nghe bài là đệm theo, chèn được giai điệu và solo vài bài.</p>
+  <div class="goal-row">
+    <span class="goal"><b>①</b> Bỏ tab khi đệm</span>
+    <span class="goal"><b>②</b> Nghe là đệm theo</span>
+    <span class="goal"><b>③</b> Chèn giai điệu</span>
+    <span class="goal"><b>④</b> Solo vài bài</span>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Các mục">
+  <button role="tab" data-tab="thay" aria-selected="true">Thầy</button>
+  <button role="tab" data-tab="chan-doan" aria-selected="false">Chẩn đoán</button>
+  <button role="tab" data-tab="lo-trinh" aria-selected="false">Lộ trình</button>
+  <button role="tab" data-tab="luyen-tai" aria-selected="false">Luyện tai</button>
+  <button role="tab" data-tab="dem-nhip" aria-selected="false">Đệm & nhịp</button>
+  <button role="tab" data-tab="can-dan" aria-selected="false">Cần đàn</button>
+</nav>
+
+<!-- ============ CHẨN ĐOÁN ============ -->
+<section class="view" id="v-thay"><div id="thay" style="display:grid;gap:16px"></div></section>
+
+<section class="view" id="v-chan-doan" hidden>
+  <div class="card">
+    <h2>Vì sao tập mãi không lên tay</h2>
+    <p class="lead">Khi đệm bằng tab, <b>mắt</b> làm hết việc: đọc chữ hợp âm rồi bấm theo. <b>Tai</b> và <b>hiểu biết hòa âm</b> gần như không được dùng, nên dù tập bao lâu kỹ năng nghe vẫn đứng yên. Để nghe là đệm được, cần luyện đúng ba thứ: tai, hiểu vòng hòa âm, và tay đủ nhanh để theo kịp tai.</p>
+  </div>
+
+  <div id="probs" style="display:grid;gap:12px"></div>
+
+  <div class="card">
+    <h2>Tự kiểm tra: bạn nên bắt đầu từ đâu</h2>
+    <p class="muted">Tích những câu bạn làm được <b>ngay bây giờ</b>, không cần nhìn tài liệu.</p>
+    <div class="check-list" id="selfcheck"></div>
+    <div class="result" id="selfresult"></div>
+  </div>
+</section>
+
+<!-- ============ LỘ TRÌNH ============ -->
+<section class="view" id="v-lo-trinh" hidden>
+  <div class="card overall">
+    <div class="phase-head"><h2>Tiến độ</h2><span class="mono" id="ovPct">0%</span></div>
+    <div class="bar"><i id="ovBar"></i></div>
+    <p class="muted" id="ovText"></p>
+  </div>
+
+  <div class="card">
+    <div class="phase-head"><h3>Nhật ký 14 ngày</h3><span class="muted" id="streak"></span></div>
+    <div class="days" id="days"></div>
+    <div class="row"><button class="btn primary" id="logToday">Đánh dấu hôm nay đã tập</button></div>
+  </div>
+
+  <div class="card">
+    <h3>Khung một buổi tập (40 phút)</h3>
+    <div class="session">
+      <div class="slot"><div class="mono">5′</div><b>Khởi động</b><p class="muted">Chromatic 1-2-3-4 theo máy đếm nhịp, chuyển hợp âm 1 phút.</p></div>
+      <div class="slot"><div class="mono">10′</div><b>Kỹ thuật</b><p class="muted">Bài tập của giai đoạn hiện tại.</p></div>
+      <div class="slot"><div class="mono">10′</div><b>Luyện tai</b><p class="muted">Tab “Luyện tai”, rồi nghe một bài thật và đoán hợp âm.</p></div>
+      <div class="slot"><div class="mono">15′</div><b>Bài hát</b><p class="muted">Một bài mới, cố gắng không mở tab. Chỉ mở để kiểm tra sau cùng.</p></div>
+    </div>
+  </div>
+
+  <div id="phases" style="display:grid;gap:22px"></div>
+</section>
+
+<!-- ============ LUYỆN TAI ============ -->
+<section class="view" id="v-luyen-tai" hidden>
+  <div class="card">
+    <h2>Luyện tai</h2>
+    <p class="muted">Đeo tai nghe. Mỗi ngày 10 phút, đạt trên 80% đúng thì chuyển bài khó hơn.</p>
+    <div class="seg" id="earType">
+      <button data-t="quality" aria-pressed="true">Trưởng hay thứ</button>
+      <button data-t="degree" aria-pressed="false">Bậc hợp âm</button>
+      <button data-t="note" aria-pressed="false">Bậc nốt (mò giai điệu)</button>
+    </div>
+    <p id="earHint" class="muted"></p>
+    <div class="row" id="earLevelRow"></div>
+    <div class="row">
+      <button class="btn primary" id="earPlay">▶ Nghe câu hỏi</button>
+      <button class="btn" id="earRef">Nghe chủ âm</button>
+      <button class="btn" id="earNext">Câu mới</button>
+    </div>
+    <div class="opts" id="earOpts"></div>
+    <div class="feedback" id="earFb" aria-live="polite"></div>
+    <div class="score"><span>Đúng <b id="sR">0</b></span><span>Sai <b id="sW">0</b></span><span>Tỉ lệ <b id="sP">–</b></span><button class="btn" id="sReset" style="padding:4px 10px;font-size:12px">Đặt lại</button></div>
+  </div>
+  <div class="card">
+    <h3>Cách chuyển từ bài tập sang bài hát thật</h3>
+    <ol style="margin:0;padding-left:20px;display:grid;gap:6px">
+      <li><b>Tìm chủ âm:</b> bật bài hát, gảy từng nốt dây 6 và dây 5 cho tới khi nghe một nốt “yên”, hợp nhất với cả bài. Đó thường là hợp âm bậc I (hoặc vi nếu bài buồn, giọng thứ).</li>
+      <li><b>Nghe chỗ đổi hợp âm:</b> gõ nhịp chân, đánh dấu chỗ bè trầm (bass) đổi nốt.</li>
+      <li><b>Thử 4 hợp âm chính:</b> I, IV, V, vi của giọng đó chiếm phần lớn nhạc pop/ballad. Bảng giọng ở tab “Đệm & nhịp”.</li>
+      <li><b>Kiểm tra cuối:</b> chỉ sau khi tự mò xong mới mở tab để so.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ ĐỆM & NHỊP ============ -->
+<section class="view" id="v-dem-nhip" hidden>
+  <div class="card">
+    <h2>Máy đếm nhịp + vòng hợp âm</h2>
+    <p class="muted">Hợp âm đổi mỗi ô nhịp. Bạn phải đổi tay đúng phách 1, không được dừng nhịp. Bật “phát hợp âm” để luyện tai cùng lúc.</p>
+    <div class="metro-big">
+      <span class="bpm" id="bpmV">70</span><span class="muted">BPM</span>
+      <div class="beats" id="beats"></div>
+    </div>
+    <input type="range" id="bpm" min="40" max="180" value="70" aria-label="Tốc độ">
+    <div class="row">
+      <label class="inline">Phách/ô <select id="bpb"><option>3</option><option selected>4</option><option>6</option></select></label>
+      <label class="inline">Giọng <select id="mKey"></select></label>
+      <label class="inline">Chế độ <select id="mMode">
+        <option value="off">Chỉ đếm nhịp</option>
+        <option value="loop1">Vòng I–V–vi–IV</option>
+        <option value="loop2">Vòng vi–IV–I–V</option>
+        <option value="loop3">Vòng I–vi–IV–V</option>
+        <option value="rand4">Ngẫu nhiên I IV V vi</option>
+        <option value="rand6">Ngẫu nhiên 6 hợp âm</option>
+      </select></label>
+      <label class="inline"><input type="checkbox" id="mStrum"> Phát hợp âm</label>
+    </div>
+    <div class="chord-now" id="chordNow"><span class="big">–</span></div>
+    <div class="row"><button class="btn primary" id="mStart">▶ Bắt đầu</button><button class="btn" id="mTap">Gõ nhịp</button></div>
+  </div>
+
+  <div class="card">
+    <h3>Bảng hợp âm theo giọng</h3>
+    <p class="muted">Mỗi giọng có 6 hợp âm “nhà”. Học thuộc theo <b>bậc</b> (I, IV, V, vi…) thay vì theo tên, bạn sẽ đệm được mọi giọng và chuyển giọng bằng capo dễ dàng. Ô tô đậm là 4 hợp âm dùng nhiều nhất.</p>
+    <div class="tbl-wrap"><table class="keys" id="keyTbl"></table></div>
+  </div>
+</section>
+
+<!-- ============ CẦN ĐÀN ============ -->
+<section class="view" id="v-can-dan" hidden>
+  <div class="card">
+    <h2>Đố nốt trên cần đàn</h2>
+    <p class="muted">Nốt vàng là nốt cần đoán. Bắt đầu với dây 6 và dây 5 (đó là nơi đặt nốt gốc của hợp âm chặn và các thế ngũ cung).</p>
+    <div class="seg" id="qStrings"></div>
+    <div class="fb-wrap"><div class="fb" id="fbQuiz"></div></div>
+    <div class="notes12" id="qOpts"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+    <div class="score"><span>Đúng <b id="qR">0</b></span><span>Sai <b id="qW">0</b></span></div>
+  </div>
+
+  <div class="card">
+    <h2>Âm giai ngũ cung</h2>
+    <p class="muted">Ngũ cung thứ là “bộ nốt” an toàn nhất để chèn giai điệu và solo trên nhạc pop, rock, blues. Chạm vào nốt để nghe. Nốt cam là nốt gốc: kết câu solo trên nốt này nghe sẽ “yên”.</p>
+    <div class="row">
+      <label class="inline">Gốc <select id="pRoot"></select></label>
+      <div class="seg" id="pType">
+        <button data-t="min" aria-pressed="true">Ngũ cung thứ</button>
+        <button data-t="maj" aria-pressed="false">Ngũ cung trưởng</button>
+        <button data-t="blues" aria-pressed="false">Blues</button>
+      </div>
+      <button class="btn" id="pPlay">▶ Chạy thang âm</button>
+    </div>
+    <div class="fb-wrap"><div class="fb" id="fbPenta"></div></div>
+    <p class="muted" style="font-size:13.5px">Mẹo: Am ngũ cung thế 1 nằm ở ngăn 5–8. Bài hát giọng C trưởng có thể solo bằng Am ngũ cung (giọng song song), nên cùng một thế tay dùng được cho hai giọng.</p>
+  </div>
+</section>
+</div>
+
+<script>
+(function(){
+/* ---------- storage ---------- */
+const LS={get(k,d){try{const v=localStorage.getItem('gl_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('gl_'+k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- music basics ---------- */
+const N=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const SOL={C:'Đô',D:'Rê',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
+const KEYS=[['C',0],['G',7],['D',2],['A',9],['E',4],['F',5],['A#',10]];
+const keyName=k=>k==='A#'?'Bb':k;
+const MAJ=[0,2,4,5,7,9,11], QUAL=['','m','m','','','m','dim'], ROMAN=['I','ii','iii','IV','V','vi','vii°'];
+const nm=(pc,flat)=>{const n=N[((pc%12)+12)%12];if(!flat)return n;return({'A#':'Bb','D#':'Eb','G#':'Ab','C#':'Db','F#':'F#'})[n]||n};
+function diatonic(rootPc,flat){return MAJ.map((iv,i)=>({deg:ROMAN[i],name:nm(rootPc+iv,flat)+QUAL[i],pc:(rootPc+iv)%12,q:QUAL[i]}));}
+const TUNE=[64,59,55,50,45,40]; // string 1..6
+
+/* ---------- audio: Karplus-Strong pluck ---------- */
+let ctx=null,master=null;const cache={};
+function ac(){if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=.55;master.connect(ctx.destination);}if(ctx.state==='suspended')ctx.resume();return ctx;}
+function buf(midi){if(cache[midi])return cache[midi];const c=ac(),sr=c.sampleRate,f=440*Math.pow(2,(midi-69)/12),dur=2.2,len=Math.floor(sr*dur),P=Math.round(sr/f);
+  const b=c.createBuffer(1,len,sr),d=b.getChannelData(0);for(let i=0;i<P;i++)d[i]=Math.random()*2-1;
+  const decay=.996-Math.max(0,(midi-60))*0.0004;for(let i=P;i<len;i++)d[i]=decay*.5*(d[i-P]+d[i-P+1<i?i-P+1:i-P]);
+  let pk=0;for(let i=0;i<len;i++)pk=Math.max(pk,Math.abs(d[i]));const fo=Math.floor(sr*0.4);for(let i=0;i<len;i++)d[i]=d[i]/(pk||1)*(i>len-fo?(len-i)/fo:1);return cache[midi]=b;}
+function pluck(midi,when=0,vol=.6){const c=ac(),s=c.createBufferSource(),g=c.createGain();s.buffer=buf(midi);g.gain.value=vol;s.connect(g);g.connect(master);s.start(c.currentTime+when);}
+function chordMidis(pc,q){let r=40+((pc-4+12)%12);const third=q==='m'||q==='dim'?3:4,fifth=q==='dim'?6:7;return[r,r+fifth,r+12,r+12+third,r+12+fifth,r+24];}
+function strum(pc,q,when=0,vol=.35){chordMidis(pc,q).forEach((m,i)=>pluck(m,when+i*.028,vol));}
+
+/* ---------- tabs ---------- */
+const tabs=[...document.querySelectorAll('nav.tabs button')];
+function show(t){tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));document.querySelectorAll('section.view').forEach(s=>s.hidden=s.id!=='v-'+t);LS.set('tab',t);}
+tabs.forEach(b=>b.onclick=()=>{show(b.dataset.tab);window.scrollTo({top:0})});
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){show(g.dataset.go);window.scrollTo({top:0})}});
+const h=(location.hash||'').slice(1);show(tabs.some(b=>b.dataset.tab===h)?h:LS.get('tab','thay'));
+
+/* ---------- diagnosis ---------- */
+const PROBS=[
+ {t:'Tai không được dùng',hi:1,sign:'Không biết bài đang đổi hợp âm lúc nào; không phân biệt được hợp âm trưởng với thứ khi nghe.',root:'Đệm bằng mắt (đọc tab), nên tai chưa bao giờ phải tự làm việc.',fix:'10 phút luyện tai mỗi ngày: trưởng/thứ → bậc hợp âm → bậc nốt.',go:'luyen-tai',gl:'Mở luyện tai'},
+ {t:'Học hợp âm như hình vẽ rời rạc',hi:1,sign:'Biết bấm Am, C, G… nhưng không biết vì sao bài lại dùng chúng; đổi giọng là bó tay.',root:'Thiếu kiến thức bậc trong giọng (I, IV, V, vi). Hầu hết bài pop/ballad chỉ xoay quanh 4–6 hợp âm của một giọng.',fix:'Học bảng hợp âm theo bậc, thuộc 4 vòng hòa âm phổ biến.',go:'dem-nhip',gl:'Xem bảng giọng'},
+ {t:'Không tìm được giọng của bài',hi:1,sign:'Nghe bài mới không biết bắt đầu từ hợp âm nào.',root:'Chưa có thói quen tìm chủ âm (nốt “về nhà”).',fix:'Mò nốt trầm trên dây 6/5 theo bài cho tới khi nghe nốt yên nhất.',go:'luyen-tai',gl:'Xem cách làm'},
+ {t:'Nhịp chưa chắc',hi:0,sign:'Đệm nhanh dần hoặc khựng lại khi đổi hợp âm; không chơi được cùng bản thu.',root:'Tập không có máy đếm nhịp, tay trái chuyển hợp âm chậm hơn tay phải.',fix:'Luôn tập với máy đếm nhịp; đổi hợp âm đúng phách 1 dù sai thế bấm.',go:'dem-nhip',gl:'Mở máy đếm nhịp'},
+ {t:'Không biết cần đàn',hi:0,sign:'Chỉ quanh quẩn 3 ngăn đầu; không biết nốt ở ngăn 5, 7 là gì.',root:'Chưa học tên nốt trên dây, nên không chặn được hợp âm hay tìm giai điệu.',fix:'Đố nốt dây 6 và 5 mỗi ngày đến khi trả lời dưới 3 giây.',go:'can-dan',gl:'Mở đố nốt'},
+ {t:'Chưa có “vốn” giai điệu và kỹ thuật lead',hi:0,sign:'Không chèn được câu dạo nào; chưa dùng hammer-on, pull-off, slide, bend.',root:'Chỉ tập đệm, chưa từng tập nốt đơn và âm giai.',fix:'Học âm giai trưởng, rồi ngũ cung thứ 5 thế, cùng 4 kỹ thuật lead.',go:'can-dan',gl:'Xem ngũ cung'},
+ {t:'Tập không có cấu trúc',hi:1,sign:'Mỗi lần cầm đàn lại chơi những bài đã thuộc; không biết hôm nay tập gì; không đo được tiến bộ.',root:'Thiếu lộ trình và mục tiêu kiểm tra, nên luôn ở “vùng thoải mái”.',fix:'Theo khung buổi tập 40 phút và bài kiểm tra cuối từng giai đoạn.',go:'lo-trinh',gl:'Mở lộ trình'},
+];
+document.getElementById('probs').innerHTML=PROBS.map((p,i)=>`
+ <div class="card prob"><span class="sev ${p.hi?'hi':''}"></span>
+  <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap"><h3>${i+1}. ${p.t}</h3><span class="pill ${p.hi?'hi':''}">${p.hi?'Gốc rễ chính':'Cần sửa'}</span></div>
+  <dl><div><dt>Dấu hiệu</dt><dd>${p.sign}</dd></div><div><dt>Nguyên nhân</dt><dd>${p.root}</dd></div><div><dt>Cách sửa</dt><dd>${p.fix}</dd></div></dl>
+  <div><button class="btn" data-go="${p.go}">${p.gl} →</button></div></div>`).join('');
+
+const SELF=[
+ [1,'Đổi giữa C, G, Am, Em, D liên tục 1 phút ở 70 BPM mà không ngắt nhịp'],
+ [1,'Bấm được hợp âm chặn F và Bm nghe rõ tiếng'],
+ [2,'Nói được 4 hợp âm I, IV, V, vi của giọng C và G'],
+ [2,'Nghe một hợp âm, biết trưởng hay thứ (đúng 8/10 lần)'],
+ [3,'Nghe một bài quen, tự tìm được giọng (hợp âm chủ)'],
+ [3,'Đệm trọn một bài mới chỉ bằng tai, không mở tab'],
+ [4,'Gọi tên được mọi nốt dây 6 và dây 5 từ ngăn 0–12'],
+ [4,'Mò ra giai điệu một bài thiếu nhi bằng tai'],
+ [5,'Chơi Am ngũ cung thế 1 theo máy đếm nhịp, có hammer-on, pull-off, bend'],
+ [6,'Chơi một đoạn solo hoàn chỉnh từ đầu tới cuối cùng bản thu'],
+];
+const PHASE_NAMES=['','Nền tay & nhịp','Hiểu hòa âm','Đệm bằng tai','Cần đàn & giai điệu','Ngũ cung & kỹ thuật lead','Solo bài hoàn chỉnh'];
+let selfState=LS.get('self',[]);
+const sc=document.getElementById('selfcheck');
+sc.innerHTML=SELF.map((s,i)=>`<label><input type="checkbox" id="sc${i}" ${selfState[i]?'checked':''}><span>${s[1]}</span></label>`).join('');
+function selfEval(){selfState=SELF.map((_,i)=>document.getElementById('sc'+i).checked);LS.set('self',selfState);
+ let ph=7;for(let p=1;p<=6;p++){if(SELF.some((s,i)=>s[0]===p&&!selfState[i])){ph=p;break;}}
+ document.getElementById('selfresult').innerHTML=ph>6?'<b>Bạn đã qua cả 6 giai đoạn.</b> Tiếp tục học thêm bài solo khó hơn và ứng tác trên backing track.':
+ `<b>Nên bắt đầu: Giai đoạn ${ph} – ${PHASE_NAMES[ph]}.</b> Những giai đoạn trước, hãy lướt nhanh để chắc chắn. <button class="btn" data-go="lo-trinh" style="margin-top:8px">Xem giai đoạn ${ph} →</button>`;}
+sc.addEventListener('change',selfEval);selfEval();
+
+/* ---------- roadmap ---------- */
+const PH=[
+ {w:'Tuần 1–3',t:'Nền tay & nhịp',goal:'Tay trái đủ nhanh để không làm gãy nhịp. Đây là điều kiện để sau này tai “ra lệnh” là tay theo kịp.',tasks:[
+  ['Tập mọi thứ với máy đếm nhịp, bắt đầu 60 BPM','Thói quen quan trọng nhất của cả lộ trình'],
+  ['Bài “1 phút đổi hợp âm”: C↔G, Am↔Em, D↔A, G↔D','Đếm số lần đổi trong 60 giây, ghi lại, mỗi tuần tăng 20%'],
+  ['Hợp âm chặn F (thế E) và Bm (thế A)','5 phút/ngày, chấp nhận rè 1–2 tuần đầu'],
+  ['3 điệu đệm nền giữ đều ở 70 BPM: ballad, slow rock, boston','Đổi hợp âm đúng phách 1, không dừng'],
+  ['Đệm vòng I–V–vi–IV ở giọng C và G bằng tab “Đệm & nhịp”','Chế độ vòng, phát hợp âm tắt'],
+ ],test:'Đệm vòng C–G–Am–F 2 phút ở 80 BPM, không một lần khựng nhịp.'},
+ {w:'Tuần 4–7',t:'Hiểu hòa âm',goal:'Hiểu vì sao bài dùng những hợp âm đó. Từ đây đổi giọng, dùng capo, đoán hợp âm đều có logic.',tasks:[
+  ['Thuộc 6 hợp âm của 5 giọng C, G, D, A, E','Nói theo bậc: “giọng G: I là G, IV là C, V là D, vi là Em”'],
+  ['Thuộc 4 vòng: I–V–vi–IV, vi–IV–I–V, I–vi–IV–V, ii–V–I','Chơi từng vòng ở 3 giọng khác nhau'],
+  ['Viết lại 5 bài đã biết theo bậc (I, IV, V…) thay vì tên hợp âm','Bạn sẽ thấy nhiều bài giống hệt nhau'],
+  ['Luyện tai “Trưởng hay thứ” đạt 80%','Mỗi ngày 10 phút'],
+  ['Dùng capo chuyển giọng một bài sang giọng hợp giọng hát mình','Giữ nguyên thế bấm, chỉ dời capo'],
+ ],test:'Ai đó đọc “giọng D, vòng I–vi–IV–V”, bạn đệm ngay không cần nghĩ quá 3 giây.'},
+ {w:'Tuần 8–11',t:'Đệm bằng tai',goal:'Mục tiêu chính của bạn: nghe bài là đệm theo, không nhìn tab.',tasks:[
+  ['Luyện tai “Bậc hợp âm” cấp 1 (I IV V vi) đạt 80%','Sau đó lên cấp 2 có ii và iii'],
+  ['Mỗi ngày tìm chủ âm của 1 bài hát bằng cách mò nốt dây 6/5','Ghi vào sổ: tên bài – giọng'],
+  ['Đánh dấu chỗ đổi hợp âm: gõ chân và nghe bè trầm','Chưa cần biết hợp âm gì, chỉ cần biết “đổi ở đâu”'],
+  ['Đệm 3 bài/tuần chỉ bằng tai, mở tab chỉ để kiểm tra','Bắt đầu với bài chậm, ít hợp âm'],
+  ['Đệm theo bản thu gốc, cùng tốc độ','Nếu lạc, nghe lại đoạn đó 3 lần rồi thử lại'],
+ ],test:'Chọn ngẫu nhiên một ballad quen, trong 10 phút đệm được trọn bài cùng bản thu, sai không quá 2 chỗ.'},
+ {w:'Tuần 12–15',t:'Cần đàn & giai điệu',goal:'Biết nốt nằm ở đâu và tự mò được giai điệu, để bắt đầu chèn câu dạo vào phần đệm.',tasks:[
+  ['Đố nốt dây 6 và 5 (ngăn 0–12) trả lời dưới 3 giây','Tab “Cần đàn”'],
+  ['Âm giai Đô trưởng 1 quãng tám, rồi 2 quãng tám','Đi lên, đi xuống theo máy đếm nhịp'],
+  ['Luyện tai “Bậc nốt” cấp 1 (Đô–Mi–Sol) rồi cấp 2 (đủ 7 nốt)','Nền tảng của mò giai điệu'],
+  ['Mò bằng tai giai điệu 3 bài thiếu nhi/dân ca quen','Ví dụ: Happy Birthday, Kìa con bướm vàng'],
+  ['Chèn câu nốt đơn ngắn vào cuối câu hát khi đệm (fill)','Dùng nốt của hợp âm đang đệm, đi lên/xuống tới nốt gốc hợp âm tiếp theo'],
+ ],test:'Mò được giai điệu đoạn điệp khúc một bài hát quen trong 15 phút.'},
+ {w:'Tuần 16–20',t:'Ngũ cung & kỹ thuật lead',goal:'Có bộ nốt và kỹ thuật để solo nghe “ra chất”.',tasks:[
+  ['Am ngũ cung thế 1 (ngăn 5–8), sau đó lần lượt 5 thế','Mỗi tuần thêm 1 thế, nối các thế với nhau'],
+  ['Hammer-on, pull-off, slide','Mỗi kỹ thuật 3 phút/ngày'],
+  ['Bend nửa cung và một cung đúng cao độ, vibrato','So cao độ bend với nốt bấm thật'],
+  ['Học 10 câu lick ngắn trong ngũ cung','Chơi mỗi lick ở 3 tốc độ'],
+  ['Ứng tác trên backing track “A minor” hoặc “C major” 5 phút/ngày','Tìm trên YouTube, bắt đầu với tempo chậm'],
+ ],test:'Ứng tác 2 phút trên backing track Am, có dùng bend và kết câu ở nốt gốc.'},
+ {w:'Tuần 21–24',t:'Solo bài hoàn chỉnh',goal:'Hoàn thành mục tiêu cuối: solo vài bài trọn vẹn.',tasks:[
+  ['Chọn 3 bài: 1 giai điệu chậm, 1 intro/solo ngắn, 1 solo dài hơn','Ưu tiên bài bạn thích nghe'],
+  ['Học từng câu 2–4 ô nhịp, nghe kỹ trước khi xem tab','Thử mò trước, tab chỉ để đối chiếu'],
+  ['Tập chậm 70% tốc độ, tăng dần 5 BPM khi chơi sạch 3 lần liền','Máy đếm nhịp bắt buộc'],
+  ['Chơi solo cùng bản thu gốc','Ghi âm lại và nghe lại'],
+  ['Thêm “chữ ký” cá nhân: đổi 1–2 câu bằng lick của mình','Bắt đầu tự sáng tạo'],
+ ],test:'Ghi âm 1 bài: đệm bằng tai phần lời, chèn fill, và chơi trọn đoạn solo.'},
+];
+let tasks=LS.get('tasks',{});
+function renderPhases(){
+ let total=0,done=0,cur=-1;
+ const html=PH.map((p,pi)=>{
+  const d=p.tasks.filter((_,ti)=>tasks[pi+'-'+ti]).length;total+=p.tasks.length;done+=d;
+  const all=d===p.tasks.length;if(!all&&cur<0)cur=pi;
+  return `<div class="phase ${all?'done':''} ${cur===pi?'current':''}">
+   <div class="phase-head"><div><span class="eyebrow">Giai đoạn ${pi+1} · ${p.w}</span><h2>${p.t}</h2></div><span class="mono muted">${d}/${p.tasks.length}</span></div>
+   <p>${p.goal}</p>
+   ${p.tasks.map((t,ti)=>{const k=pi+'-'+ti,on=!!tasks[k];return `<label class="task ${on?'on':''}"><input type="checkbox" id="t${k}" data-k="${k}" ${on?'checked':''}><span>${t[0]}<small>${t[1]}</small></span></label>`}).join('')}
+   <div class="test"><b>Kiểm tra để qua giai đoạn:</b> ${p.test}</div></div>`;}).join('');
+ document.getElementById('phases').innerHTML=html;
+ const pct=Math.round(done/total*100);document.getElementById('ovPct').textContent=pct+'%';document.getElementById('ovBar').style.width=pct+'%';
+ document.getElementById('ovText').textContent=cur<0?'Hoàn thành toàn bộ lộ trình.':`Đang ở giai đoạn ${cur+1}: ${PH[cur].t}. Đã xong ${done}/${total} nhiệm vụ.`;
+}
+document.getElementById('phases').addEventListener('change',e=>{const k=e.target.dataset.k;if(!k)return;tasks[k]=e.target.checked;LS.set('tasks',tasks);renderPhases();});
+renderPhases();
+
+const dk=d=>d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+let log=LS.get('log',{});
+function renderLog(){const el=document.getElementById('days');let s='';const t=new Date();
+ for(let i=13;i>=0;i--){const d=new Date(t);d.setDate(t.getDate()-i);s+=`<i class="${log[dk(d)]?'on':''} ${i===0?'today':''}" title="${d.getDate()}/${d.getMonth()+1}"></i>`;}
+ el.innerHTML=s;let st=0;const d=new Date(t);if(!log[dk(d)])d.setDate(d.getDate()-1);while(log[dk(d)]){st++;d.setDate(d.getDate()-1);}
+ document.getElementById('streak').textContent=st?`Chuỗi ${st} ngày liên tiếp`:'Chưa có chuỗi';
+ document.getElementById('logToday').textContent=log[dk(t)]?'Bỏ đánh dấu hôm nay':'Đánh dấu hôm nay đã tập';}
+document.getElementById('logToday').onclick=()=>{const k=dk(new Date());log[k]=!log[k];if(!log[k])delete log[k];LS.set('log',log);renderLog();};
+renderLog();
+
+/* ---------- ear training ---------- */
+const HINT={quality:'Nghe một hợp âm. Trưởng nghe sáng, vui; thứ nghe tối, buồn.',
+ degree:'Đầu tiên nghe hợp âm chủ (I) để định giọng, sau đó là hợp âm cần đoán. Đây chính là kỹ năng đệm bằng tai.',
+ note:'Nghe hợp âm chủ, rồi một nốt. Đoán nốt đó là bậc mấy (Đô = 1). Đây là kỹ năng mò giai điệu.'};
+let earT='quality',lvl=LS.get('lvl',{degree:1,note:1}),q=null,answered=false;
+let score=LS.get('score',{quality:[0,0],degree:[0,0],note:[0,0]});
+function earLevels(){const r=document.getElementById('earLevelRow');
+ if(earT==='quality'){r.innerHTML='';return;}
+ const L=earT==='degree'?[[1,'Cấp 1: I IV V vi'],[2,'Cấp 2: + ii iii']]:[[1,'Cấp 1: Đô Mi Sol'],[2,'Cấp 2: đủ 7 nốt']];
+ r.innerHTML='<div class="seg">'+L.map(([v,t])=>`<button data-l="${v}" aria-pressed="${lvl[earT]===v}">${t}</button>`).join('')+'</div>';}
+document.getElementById('earLevelRow').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(!b)return;lvl[earT]=+b.dataset.l;LS.set('lvl',lvl);earLevels();newQ();});
+function newQ(){answered=false;document.getElementById('earFb').textContent='';document.getElementById('earFb').className='feedback';
+ const key=KEYS[Math.floor(Math.random()*5)];const kpc=key[1];
+ if(earT==='quality'){const pc=Math.floor(Math.random()*12),m=Math.random()<.5?'m':'';
+  q={key:kpc,ans:m?'Thứ':'Trưởng',opts:[['Trưởng','sáng'],['Thứ','tối']],play:()=>strum(pc,m),reveal:nm(pc)+m};}
+ else if(earT==='degree'){const pool=lvl.degree===1?[0,3,4,5]:[0,1,2,3,4,5];const dia=diatonic(kpc);const pick=pool[Math.floor(Math.random()*pool.length)];
+  q={key:kpc,ans:dia[pick].deg,opts:pool.map(i=>[dia[i].deg,dia[i].name]),play:()=>{strum(kpc,'');strum(dia[pick].pc,dia[pick].q,1.4)},reveal:dia[pick].name+' (giọng '+keyName(key[0])+')'};}
+ else{const pool=lvl.note===1?[0,2,4]:[0,1,2,3,4,5,6];const pick=pool[Math.floor(Math.random()*pool.length)];const base=52+((kpc-4+12)%12);
+  const names=['Đô','Rê','Mi','Fa','Sol','La','Si'];
+  q={key:kpc,ans:names[pick],opts:pool.map(i=>[names[i],'bậc '+(i+1)]),play:()=>{strum(kpc,'',0,.25);pluck(base+MAJ[pick],1.3,.8)},reveal:names[pick]+' = '+nm(kpc+MAJ[pick])+' trong giọng '+keyName(key[0])};}
+ document.getElementById('earOpts').innerHTML=q.opts.map(o=>`<button class="opt" data-a="${o[0]}">${o[0]}<small>${o[1]}</small></button>`).join('');}
+function renderScore(){const s=score[earT];document.getElementById('sR').textContent=s[0];document.getElementById('sW').textContent=s[1];
+ document.getElementById('sP').textContent=s[0]+s[1]?Math.round(s[0]/(s[0]+s[1])*100)+'%':'–';}
+function setEar(t){earT=t;document.querySelectorAll('#earType button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===t));
+ document.getElementById('earHint').textContent=HINT[t];earLevels();newQ();renderScore();}
+document.getElementById('earType').onclick=e=>{const b=e.target.closest('button');if(b)setEar(b.dataset.t)};
+document.getElementById('earPlay').onclick=()=>q.play();
+document.getElementById('earRef').onclick=()=>{strum(q.key,'');};
+document.getElementById('earNext').onclick=()=>{newQ();q.play();};
+document.getElementById('sReset').onclick=()=>{score[earT]=[0,0];LS.set('score',score);renderScore();};
+document.getElementById('earOpts').onclick=e=>{const b=e.target.closest('.opt');if(!b||answered)return;answered=true;
+ const ok=b.dataset.a===q.ans;b.classList.add(ok?'right':'wrong');
+ if(!ok)document.querySelector(`#earOpts .opt[data-a="${q.ans}"]`).classList.add('right');
+ score[earT][ok?0:1]++;LS.set('score',score);renderScore();
+ const fb=document.getElementById('earFb');fb.className='feedback '+(ok?'ok':'no');fb.textContent=(ok?'Đúng! ':'Chưa đúng. ')+'Đáp án: '+q.reveal;
+ setTimeout(()=>{if(answered){newQ();q.play();}},1600);};
+setEar('quality');
+
+/* ---------- metronome + chords ---------- */
+const keySel=document.getElementById('mKey');
+keySel.innerHTML=KEYS.map((k,i)=>`<option value="${i}">${keyName(k[0])}</option>`).join('');
+let bpm=70,bpb=4,running=false,nextT=0,beat=0,timer=null,bar=-1,curCh=null,nextCh=null,queue=[];
+const beatsEl=document.getElementById('beats');
+function drawBeats(){beatsEl.innerHTML=Array.from({length:bpb},(_,i)=>`<i class="${i===0?'first':''}"></i>`).join('');}
+drawBeats();
+document.getElementById('bpm').oninput=e=>{bpm=+e.target.value;document.getElementById('bpmV').textContent=bpm;};
+document.getElementById('bpb').onchange=e=>{bpb=+e.target.value;drawBeats();};
+const LOOPS={loop1:[0,4,5,3],loop2:[5,3,0,4],loop3:[0,5,3,4]};
+function chordFor(b){const mode=document.getElementById('mMode').value;if(mode==='off')return null;const k=KEYS[+keySel.value];const dia=diatonic(k[1],k[0]==='F'||k[0]==='A#');
+ if(LOOPS[mode])return dia[LOOPS[mode][((b%4)+4)%4]];
+ const pool=mode==='rand4'?[0,3,4,5]:[0,1,2,3,4,5];
+ if(!chordFor.seq)chordFor.seq={};if(chordFor.seq[b]===undefined){let p;do{p=pool[Math.floor(Math.random()*pool.length)]}while(chordFor.seq[b-1]!==undefined&&dia[p].deg===chordFor.seq[b-1].deg);chordFor.seq[b]=dia[p];}
+ return chordFor.seq[b];}
+function click(t,acc){const c=ac(),o=c.createOscillator(),g=c.createGain();o.frequency.value=acc?1600:1000;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(acc?.5:.3,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.05);o.connect(g);g.connect(master);o.start(t);o.stop(t+.06);}
+function sched(){const c=ac();while(nextT<c.currentTime+.12){
+  if(beat===0){bar++;const ch=chordFor(bar);if(ch&&document.getElementById('mStrum').checked)strum(ch.pc,ch.q,nextT-c.currentTime,.28);}
+  click(nextT,beat===0);queue.push({t:nextT,beat,bar});nextT+=60/bpm;beat=(beat+1)%bpb;}}
+function drawLoop(){if(!running)return;const now=ctx.currentTime;while(queue.length&&queue[0].t<=now){const e=queue.shift();
+  [...beatsEl.children].forEach((d,i)=>d.classList.toggle('on',i===e.beat));
+  if(e.beat===0)renderChord(e.bar);}
+ requestAnimationFrame(drawLoop);}
+function renderChord(b){const el=document.getElementById('chordNow');const c=chordFor(b),n=chordFor(b+1);
+ if(!c){el.innerHTML='<span class="big">'+(b%2?'·':'–')+'</span><span class="next">Chọn một chế độ vòng hợp âm để luyện đổi hợp âm.</span>';return;}
+ el.innerHTML=`<span class="big">${c.name}</span><span class="deg">${c.deg}</span><span class="next">tiếp theo: <b>${n.name}</b> (${n.deg})</span>`;}
+document.getElementById('mStart').onclick=e=>{const c=ac();running=!running;e.target.textContent=running?'■ Dừng':'▶ Bắt đầu';
+ if(running){beat=0;bar=-1;queue=[];chordFor.seq={};nextT=c.currentTime+.1;sched();timer=setInterval(sched,25);requestAnimationFrame(drawLoop);}
+ else{clearInterval(timer);[...beatsEl.children].forEach(d=>d.classList.remove('on'));}};
+let taps=[];document.getElementById('mTap').onclick=()=>{const t=performance.now();taps=taps.filter(x=>t-x<3000);taps.push(t);
+ if(taps.length>1){const avg=(taps[taps.length-1]-taps[0])/(taps.length-1);bpm=Math.max(40,Math.min(180,Math.round(60000/avg)));document.getElementById('bpm').value=bpm;document.getElementById('bpmV').textContent=bpm;}};
+['mKey','mMode'].forEach(id=>document.getElementById(id).onchange=()=>{chordFor.seq={};renderChord(Math.max(bar,0));});
+renderChord(0);
+
+/* key table */
+(function(){const rows=[['C',0],['G',7],['D',2],['A',9],['E',4],['F',5],['A#',10]];
+ let s='<tr><th>Giọng</th>'+ROMAN.slice(0,6).map(r=>`<th>${r}</th>`).join('')+'<th>Giọng thứ song song</th></tr>';
+ rows.forEach(([k,pc])=>{const d=diatonic(pc,k==='F'||k==='A#');s+=`<tr><td class="k">${keyName(k)}</td>`+d.slice(0,6).map((c,i)=>`<td class="${[0,3,4,5].includes(i)?'hl':''}">${c.name}</td>`).join('')+`<td>${d[5].name}</td></tr>`;});
+ document.getElementById('keyTbl').innerHTML=s;})();
+
+/* ---------- fretboard ---------- */
+function fretboard(el,frets,cellFn,onTap){const cols=frets+2;el.style.gridTemplateColumns=`28px 34px repeat(${frets},minmax(38px,1fr))`;
+ let s='';for(let st=0;st<6;st++){s+=`<div class="sname">${st+1}</div>`;for(let f=0;f<=frets;f++){const c=cellFn(st,f);
+  s+=`<div class="cell ${f===0?'nut':''}" style="--sw:${(.8+st*.35).toFixed(2)}px" data-s="${st}" data-f="${f}">${c?`<span class="dot ${c.cls||''}">${c.label}</span>`:''}</div>`;}}
+ s+='<div class="lbl"></div>';for(let f=0;f<=frets;f++)s+=`<div class="lbl">${[3,5,7,9,12,15].includes(f)?(f===12?'••':'•')+f:f===0?'0':''}</div>`;
+ el.innerHTML=s;el.onclick=e=>{const c=e.target.closest('.cell');if(c&&onTap)onTap(+c.dataset.s,+c.dataset.f);};}
+
+/* quiz */
+let qStrings=LS.get('qstr',[5,4]),qq=null,qAns=false,qs=LS.get('qs',[0,0]);
+const qsEl=document.getElementById('qStrings');
+function drawQS(){qsEl.innerHTML=[5,4,3,2,1,0].map(s=>`<button data-s="${s}" aria-pressed="${qStrings.includes(s)}">Dây ${s+1}</button>`).join('');}
+qsEl.onclick=e=>{const b=e.target.closest('button');if(!b)return;const s=+b.dataset.s;qStrings=qStrings.includes(s)?qStrings.filter(x=>x!==s):[...qStrings,s];if(!qStrings.length)qStrings=[s];LS.set('qstr',qStrings);drawQS();newQuiz();};
+function newQuiz(){qAns=false;const s=qStrings[Math.floor(Math.random()*qStrings.length)],f=Math.floor(Math.random()*13);qq={s,f,pc:TUNE[s]%12+f};qq.pc%=12;
+ fretboard(document.getElementById('fbQuiz'),12,(st,fr)=>st===s&&fr===f?{cls:'target',label:'?'}:null,null);
+ document.getElementById('qFb').textContent='';document.getElementById('qFb').className='feedback';
+ document.getElementById('qOpts').innerHTML=N.map((n,i)=>`<button class="opt" data-pc="${i}">${n}<small>${SOL[n]||'#'}</small></button>`).join('');
+ document.getElementById('qR').textContent=qs[0];document.getElementById('qW').textContent=qs[1];}
+document.getElementById('qOpts').onclick=e=>{const b=e.target.closest('.opt');if(!b||qAns)return;qAns=true;const ok=+b.dataset.pc===qq.pc;
+ b.classList.add(ok?'right':'wrong');if(!ok)document.querySelector(`#qOpts .opt[data-pc="${qq.pc}"]`).classList.add('right');
+ qs[ok?0:1]++;LS.set('qs',qs);pluck(TUNE[qq.s]+qq.f,0,.7);
+ fretboard(document.getElementById('fbQuiz'),12,(st,fr)=>st===qq.s&&fr===qq.f?{cls:'target',label:N[qq.pc]}:(st===qq.s&&fr<=12?{cls:'ghost',label:N[(TUNE[st]+fr)%12]}:null),null);
+ const fb=document.getElementById('qFb');fb.className='feedback '+(ok?'ok':'no');fb.textContent=(ok?'Đúng! ':'Chưa đúng. ')+`Dây ${qq.s+1} ngăn ${qq.f} là ${N[qq.pc]}.`;
+ setTimeout(newQuiz,1800);};
+drawQS();newQuiz();
+
+/* pentatonic */
+const pRoot=document.getElementById('pRoot');pRoot.innerHTML=N.map((n,i)=>`<option value="${i}" ${i===9?'selected':''}>${n}</option>`).join('');
+let pType='min';const SC={min:[0,3,5,7,10],maj:[0,2,4,7,9],blues:[0,3,5,6,7,10]};
+function drawPenta(){const r=+pRoot.value,set=SC[pType].map(x=>(r+x)%12);
+ fretboard(document.getElementById('fbPenta'),15,(st,f)=>{const pc=(TUNE[st]+f)%12;if(!set.includes(pc))return null;return{cls:pc===r?'root':'',label:N[pc]};},(st,f)=>pluck(TUNE[st]+f,0,.7));}
+pRoot.onchange=drawPenta;
+document.getElementById('pType').onclick=e=>{const b=e.target.closest('button');if(!b)return;pType=b.dataset.t;document.querySelectorAll('#pType button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawPenta();};
+document.getElementById('pPlay').onclick=()=>{const r=+pRoot.value;let base=45+((r-9+12)%12);if(base<42)base+=12;const sc=SC[pType];const seq=[...sc.map(x=>base+x),base+12,...sc.slice().reverse().map(x=>base+x)];seq.forEach((m,i)=>pluck(m,i*.28,.7));};
+drawPenta();
+window.GLAudio={LS,ac,master:()=>(ac(),master),pluck:(m,t,v)=>pluck(m,Math.max(0,t-ac().currentTime),v)};
+})();
+</script>
+<script>
+/* Ear: the app's listening engine. Pure functions, shared by the browser app and the node tests. */
+(function (root) {
+const N12 = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const TUNE = [40,45,50,55,59,64];              // index 0 = string 6 (low E) ... 5 = string 1
+const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+const ftom = f => 69 + 12 * Math.log2(f / 440);
+
+/* Chord shapes: frets for strings 6..1, null = not played */
+const CHORDS = {
+  C:[null,3,2,0,1,0], D:[null,null,0,2,3,2], E:[0,2,2,1,0,0], F:[1,3,3,2,1,1], G:[3,2,0,0,0,3],
+  A:[null,0,2,2,2,0], B:[null,2,4,4,4,2], Am:[null,0,2,2,1,0], Bm:[null,2,4,4,3,2], Cm:[null,3,5,5,4,3],
+  Dm:[null,null,0,2,3,1], Em:[0,2,2,0,0,0], Fm:[1,3,3,1,1,1], Gm:[3,5,5,3,3,3],
+  A7:[null,0,2,0,2,0], B7:[null,2,1,2,0,2], C7:[null,3,2,3,1,0], D7:[null,null,0,2,1,2], E7:[0,2,0,1,0,0], G7:[3,2,0,0,0,1]
+};
+const chordMidis = name => CHORDS[name].map((fr, i) => fr == null ? null : TUNE[i] + fr);
+
+/* ---- resampling to ~24 kHz (halves the cost of pitch tracking on phones) ---- */
+function decimate(x, sr) {
+  if (sr < 32000) return { x: Float32Array.from(x), sr };
+  const n = Math.floor(x.length / 2), y = new Float32Array(n);
+  let p = 0;
+  for (let i = 0; i < n; i++) { const a = x[2*i], b = x[2*i+1]; y[i] = 0.25*p + 0.5*a + 0.25*b; p = b; }
+  return { x: y, sr: sr / 2 };
+}
+
+/* ---- YIN pitch ---- */
+function yin(x, sr, start, N = 1024, fmin = 72, fmax = 1100, th = 0.15) {
+  const tmax = Math.min(Math.floor(sr / fmin), Math.floor((x.length - start - N) - 2));
+  const tmin = Math.floor(sr / fmax);
+  if (tmax <= tmin + 2) return { f: 0, conf: 0 };
+  const d = new Float32Array(tmax + 2);
+  for (let t = 1; t <= tmax + 1; t++) {
+    let s = 0; for (let i = 0; i < N; i++) { const v = x[start+i] - x[start+i+t]; s += v*v; } d[t] = s;
+  }
+  const c = new Float32Array(tmax + 2); c[0] = 1; let run = 0;
+  for (let t = 1; t <= tmax + 1; t++) { run += d[t]; c[t] = run > 0 ? d[t] * t / run : 1; }
+  let tau = -1;
+  for (let t = tmin; t < tmax; t++) if (c[t] < th && c[t] <= c[t+1]) { tau = t; break; }
+  if (tau < 0) { let best = tmin; for (let t = tmin; t < tmax; t++) if (c[t] < c[best]) best = t; if (c[best] > 0.35) return { f: 0, conf: 1 - c[best] }; tau = best; }
+  const a = c[tau-1], b = c[tau], cc = c[tau+1], den = a - 2*b + cc;
+  const sh = den !== 0 ? (a - cc) / (2 * den) : 0;
+  return { f: sr / (tau + sh), conf: 1 - b };
+}
+function rms(x, s, n) { let e = 0, k = 0; for (let i = s; i < s + n && i < x.length; i++, k++) e += x[i]*x[i]; return k ? Math.sqrt(e / k) : 0; }
+
+/* ---- FFT (radix-2, in place) ---- */
+function fft(re, im) {
+  const n = re.length;
+  for (let i = 1, j = 0; i < n; i++) { let bit = n >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; } }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang);
+    for (let i = 0; i < n; i += len) { let cr = 1, ci = 0;
+      for (let k = 0; k < len / 2; k++) { const a = i+k, b = a+len/2, tr = re[b]*cr - im[b]*ci, ti = re[b]*ci + im[b]*cr;
+        re[b] = re[a] - tr; im[b] = im[a] - ti; re[a] += tr; im[a] += ti; const nr = cr*wr - ci*wi; ci = cr*wi + ci*wr; cr = nr; } }
+  }
+}
+const hannCache = {};
+function hann(n) { return hannCache[n] || (hannCache[n] = Float32Array.from({ length: n }, (_, i) => 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (n - 1)))); }
+function mag(x, start, n) {
+  const re = new Float32Array(n), im = new Float32Array(n), w = hann(n);
+  for (let i = 0; i < n; i++) re[i] = (x[start + i] || 0) * w[i];
+  fft(re, im); const m = new Float32Array(n / 2);
+  for (let i = 0; i < n / 2; i++) m[i] = Math.hypot(re[i], im[i]);
+  return m;
+}
+
+/* ---- note-level spectrum: energy per MIDI note 40..99, peak-picked.
+   With `before` (spectrum just before the strum) only what the new strum added is counted,
+   so a previous chord that is still ringing does not blur the new one. ---- */
+function noteEnergyFromMag(m, sr, n) {
+  const e = new Float32Array(100), binHz = sr / n;
+  for (let k = Math.ceil(70 / binHz); k < Math.min(n / 2 - 1, 2600 / binHz); k++) {
+    if (m[k] < m[k-1] || m[k] < m[k+1] || m[k] <= 0) continue;
+    const a = m[k-1], b = m[k], c = m[k+1], den = a - 2*b + c, p = den ? 0.5 * (a - c) / den : 0;
+    const midi = ftom((k + p) * binHz), r = Math.round(midi);
+    if (Math.abs(midi - r) > 0.35 || r < 38 || r > 99) continue;
+    e[r] += b * b;
+  }
+  return e;
+}
+function noteEnergy(x, sr, start, n = 8192, diffBefore = false) {
+  const m = mag(x, start, n);
+  if (diffBefore) { const pre = start - n - Math.round(0.03 * sr); if (pre >= 0) { const b = mag(x, pre, n); for (let k = 0; k < m.length; k++) m[k] = Math.max(0, m[k] - 1.1 * b[k]); } }
+  return noteEnergyFromMag(m, sr, n);
+}
+/* Predicted note energy of a voicing (fundamental + harmonics) */
+const H = [1, 2, 3, 4, 5, 6, 8], HA = [1, .55, .35, .25, .15, .1, .06];
+function predict(midis) {
+  const e = new Float32Array(100);
+  midis.forEach(m => { if (m == null) return; H.forEach((h, i) => { const r = Math.round(m + 12 * Math.log2(h)); if (r < 100) e[r] += HA[i] * HA[i]; }); });
+  return e;
+}
+function toChroma(e, lo = 40) { const c = new Float32Array(12); for (let r = lo; r < 100; r++) c[r % 12] += Math.sqrt(e[r]); return c; }
+function cos(a, b) { let s = 0, na = 0, nb = 0; for (let i = 0; i < a.length; i++) { s += a[i]*b[i]; na += a[i]*a[i]; nb += b[i]*b[i]; } return na && nb ? s / Math.sqrt(na*nb) : 0; }
+const PRED = {}; Object.keys(CHORDS).forEach(k => PRED[k] = toChroma(predict(chordMidis(k))));
+
+/* Is the strummed sound the chord we asked for? Compare against every known shape. */
+function verifyChord(x, sr, onset, target, opts = {}) {
+  const n = sr > 30000 ? 16384 : 8192, start = onset + Math.round(0.04 * sr);
+  if (start + n > x.length) return { ok: false, reason: 'short' };
+  const obs = toChroma(noteEnergy(x, sr, start, n, opts.fresh === true));
+  const cands = opts.cands ? [...new Set([...opts.cands, target])] : Object.keys(PRED);
+  const scores = cands.map(k => [k, cos(obs, PRED[k])]).sort((a, b) => b[1] - a[1]);
+  const tScore = scores.find(s => s[0] === target)[1];
+  const best = scores[0], margin = opts.margin ?? 0.08, floor = opts.floor ?? 0.75;
+  // every pitch class of the shape must actually sound (a muted string that holds the only 3rd turns Am into a bare A5)
+  const want = [...new Set(chordMidis(target).filter(m => m != null).map(m => m % 12))];
+  const mx = Math.max(...obs) || 1, missing = want.filter(pc => obs[pc] < (opts.pcFloor ?? 0.1) * mx);
+  const ok = (best[0] === target || best[1] - tScore < margin) && tScore >= floor && !missing.length;
+  return { ok, score: tScore, best: best[0], bestScore: best[1], missing: missing.map(pc => N12[pc]) };
+}
+
+/* ---- onset detection ----
+   Two cues per 10 ms frame: (1) energy rise in the guitar's low-mid band, (2) how many high bins jump at once
+   (a pick or finger attack is broadband). The metronome click is a soft-attack pure tone at 1.6–2.4 kHz, so it
+   raises neither cue much. Each cue is scaled by its own median, so the detector adapts to the room and the mic. */
+/* The app's metronome click is a pure 1.6 / 2.4 kHz tone: notch it out before looking for attacks. */
+function notch(x, sr, freqs = [1600, 2400], Q = 8) {
+  let y = x;
+  for (const f of freqs) {
+    if (f >= sr / 2) continue;
+    const w = 2 * Math.PI * f / sr, al = Math.sin(w) / (2 * Q), c = Math.cos(w), a0 = 1 + al;
+    const b0 = 1 / a0, b1 = -2 * c / a0, b2 = 1 / a0, a1 = -2 * c / a0, a2 = (1 - al) / a0;
+    const out = new Float32Array(y.length); let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    for (let i = 0; i < y.length; i++) { const v = b0 * y[i] + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2; x2 = x1; x1 = y[i]; y2 = y1; y1 = v; out[i] = v; }
+    y = out;
+  }
+  return y;
+}
+function onsets(x, sr, opts = {}) {
+  if (opts.notch !== false) x = notch(x, sr);
+  const n = 1024, hop = Math.round(sr * 0.0107), bin = sr / n;
+  const lo = Math.floor(70 / bin), hi = Math.ceil(1100 / bin), b1 = Math.floor(1300 / bin), b2 = Math.min(n / 2 - 1, Math.floor(8000 / bin));
+  // bins around the click tones (and their overtones from a small speaker) do not count as an attack
+  const skip = new Uint8Array(n / 2); for (const cf of [1600, 2400, 3200, 4800, 7200]) for (let k = Math.floor((cf - 120) / bin); k <= Math.ceil((cf + 120) / bin); k++) if (k > 0 && k < n / 2) skip[k] = 1;
+  const F = [], B = [], level = []; let prevC = null, prevL = null;
+  for (let s = 0; s + n < x.length; s += hop) {
+    const m = mag(x, s, n); let f = 0, b = 0;
+    const c = new Float32Array(hi), L = new Float32Array(b2);
+    for (let k = lo; k < hi; k++) c[k] = Math.sqrt(m[k]);
+    for (let k = b1; k < b2; k++) L[k] = Math.log(m[k] + 1e-4);
+    if (prevC) { for (let k = lo; k < hi; k++) f += Math.max(0, c[k] - prevC[k]); for (let k = b1; k < b2; k++) if (!skip[k] && L[k] - prevL[k] > 0.7) b++; }
+    prevC = c; prevL = L; F.push(f); B.push(b / (b2 - b1 - skip.reduce((a, v, k) => a + (k >= b1 && k < b2 ? v : 0), 0))); level.push(rms(x, s, n));
+  }
+  const pct = (a, p) => { const t = a.slice().sort((u, v) => u - v); return t[Math.floor((t.length - 1) * p)] || 0; };
+  const fl = opts.floor ?? 12;
+  // statistics over frames where something is sounding (stretches of silence would make every ripple look like an attack)
+  const pk = Math.max(...level), act = level.map(v => v > pk * 0.02);
+  const FA = F.filter((_, i) => act[i]), BA = B.filter((_, i) => act[i]);
+  const FF = FA.length > 10 ? FA : F, BB = BA.length > 10 ? BA : B;
+  const mF = Math.max(pct(FF, 0.5), pct(FF, 0.97) / fl) + 1e-6, mB = Math.max(pct(BB, 0.5), pct(BB, 0.97) / fl) + 1e-3;
+  const D = F.map((f, i) => f / mF + (B[i] / mB) * (opts.wb ?? 1));
+  for (let i = D.length - 1; i > 0; i--) D[i] = Math.max(D[i], 0.5 * (D[i] + D[i-1]));
+  const thr = opts.thr ?? 7, minGap = Math.round((opts.minGap ?? 0.09) * sr / hop);
+  const noiseLv = level.slice().sort((a, b) => a - b)[Math.floor(level.length * 0.1)] || 0;
+  const cand = [];
+  for (let i = 1; i < D.length - 1; i++)
+    if (D[i] > thr && D[i] >= D[i-1] && D[i] >= D[i+1] && level[Math.min(i + 2, level.length - 1)] > noiseLv * 1.5) cand.push(i);
+  // keep the strongest peak within each minGap neighbourhood
+  const out = [];
+  for (const i of cand) {
+    if (cand.some(j => j !== i && Math.abs(j - i) < minGap && (D[j] > D[i] || (D[j] === D[i] && j < i)))) continue;
+    const pre = rms(x, Math.max(0, i * hop - Math.round(0.03 * sr)), Math.round(0.03 * sr)), post = rms(x, i * hop + Math.round(0.01 * sr), Math.round(0.03 * sr));
+    const rs = post / (pre + 1e-9); if (opts.rise && (rs < 0.97 || (rs < 1.05 && F[i] / mF < 3))) continue;   // a real attack makes the sound louder
+    out.push({ t: i * hop / sr + 0.018, s: i * hop, strength: D[i], fz: F[i] / mF, bz: B[i] / mB, rise: post / (pre + 1e-9) });
+  }
+  return out;
+}
+
+/* Pitch of a note just plucked, while earlier notes may still ring.
+   1) spectrum after the onset minus spectrum before it = only what was just played
+   2) harmonic sum over candidate notes picks the note; odd harmonics settle the octave
+   3) YIN refines to cents when it agrees with that note */
+function notePitch(x, sr, s, opts = {}) {
+  const n = 4096, gap = Math.round(0.03 * sr);
+  if (s + gap + n > x.length) return null;
+  const after = mag(x, s + gap, n), before = s - n >= 0 ? mag(x, s - n, n) : new Float32Array(n / 2);
+  const diff = new Float32Array(n / 2); for (let k = 0; k < n / 2; k++) diff[k] = Math.max(0, after[k] - 1.2 * before[k]);
+  const bin = sr / n;
+  const peakAt = f => { const c = f / bin, lo = Math.max(1, Math.floor(c * 0.985) - 1), hi = Math.min(n / 2 - 1, Math.ceil(c * 1.015) + 1); let m = 0; for (let k = lo; k <= hi; k++) m = Math.max(m, diff[k]); return m; };
+  const score = m => { const f = mtof(m); let v = 0; for (let h = 1; h <= 8; h++) if (f * h < sr / 2 - 100) v += peakAt(f * h) * Math.pow(0.85, h - 1); return v; };
+  const S = {}; let best = -1, top = 0; for (let m = 38; m <= 90; m++) { S[m] = score(m); if (S[m] > top) { top = S[m]; best = m; } }
+  const vals = Object.values(S).sort((p, q) => p - q), medv = vals[Math.floor(vals.length / 2)];
+  const clarity = top / (medv + 1e-9);
+  if (top < 1e-6 || clarity < (opts.clarity ?? 1.55)) return opts.debug ? { midi: null, clarity } : opts.full ? { midi: null, S, top, fresh: 0 } : null;
+  // the strongest candidate is often a harmonic of the real note: accept a lower candidate if it scores
+  // nearly as well AND has partials of its own that the higher candidate cannot explain
+  const fb = mtof(best); let chosen = best;
+  for (const d of [12, 19, 24, 28, 31]) {
+    const c = best - d; if (c < 38) continue; const fc = mtof(c);
+    if (S[c] < 0.45 * top) continue;
+    let own = 0; for (let h = 1; h <= 8; h++) { const fh = fc * h, r = fh / fb; if (Math.abs(r - Math.round(r)) > 0.03 || Math.round(r) === 0) own += peakAt(fh) * Math.pow(0.85, h - 1); }
+    if (own > 0.2 * S[c]) chosen = c;
+  }
+  best = chosen;
+  // harmonicity: share of the new sound's energy that sits on this note's harmonics (a muted-string thud has little)
+  let tot = 0, onH = 0; const kLo = Math.floor(70 / bin), kHi = Math.min(n / 2 - 1, Math.floor(4000 / bin));
+  for (let k = kLo; k <= kHi; k++) tot += diff[k] * diff[k];
+  { const fb2 = mtof(best); for (let h = 1; h <= 10; h++) { const c = fb2 * h / bin; if (c > kHi) break; const lo = Math.floor(c * 0.985) - 1, hi = Math.ceil(c * 1.015) + 1; for (let k = Math.max(kLo, lo); k <= hi; k++) onH += diff[k] * diff[k]; } }
+  const harm = tot ? onH / tot : 0;
+  let eB = 0, eA = 0; for (let k = kLo; k <= kHi; k++) { eB += before[k] * before[k]; eA += after[k] * after[k]; }
+  const ringing = eA ? eB / eA : 0, fresh = eA ? tot / eA : 0;
+  if (fresh < (opts.fresh ?? 0.13)) return opts.debug ? { midi: null, clarity, harm, ringing, fresh, cand: best } : opts.full ? { midi: null, S, top, fresh } : null;   // nothing new rang out: muted string
+  // a confident YIN read that the spectrum also supports wins (YIN is very reliable on a clean single note,
+  // but on a mix with strings still ringing it follows the loudest string, so skip it then)
+  if (ringing < 0.25) { const st = s + Math.round(0.07 * sr); if (st + 1024 + sr / 70 < x.length) { const r = yin(x, sr, st);
+      if (r.f && r.conf > 0.85) { const my = Math.round(ftom(r.f)); if (my >= 38 && [12, 19, 24, 28, 31, 34, 36].includes(best - my) && S[my] >= 0.3 * top) best = my; } } }
+  if (opts.debug) return { midi: best, clarity, harm, ringing, fresh };
+  // refine with YIN
+  for (const dt of [0.06, 0.1, 0.14]) { const st = s + Math.round(dt * sr); if (st + 1024 + sr / 70 >= x.length) break;
+    const r = yin(x, sr, st); if (!r.f) continue; const m = ftom(r.f);
+    for (const o of [0, 12, -12, 24]) if (Math.abs(m + o - best) < 0.5) { const v = best + ((m + o) - Math.round(m + o)); return opts.full ? { midi: v, S, top, fresh } : v; } }
+  return opts.full ? { midi: best, S, top, fresh } : best;
+}
+/* Turn audio into a list of notes: {t, midi|null (null = thud / muted string)} */
+function noteEvents(x, sr, opts = {}) {
+  // single notes: an attack must make the sound louder, and a pluck that rings out no new pitch is dropped
+  // (a muted string then shows up as a string with no note, which the alignment reports as muted)
+  const ev = onsets(x, sr, { minGap: 0.12, rise: true }).map(o => { const r = notePitch(x, sr, o.s, { full: true }) || { midi: null }; return { t: o.t, s: o.s, midi: r.midi, S: r.S, top: r.top }; });
+  return opts.keepNull ? ev : ev.filter(e => e.midi != null);
+}
+
+/* Compare string-by-string playing with the chord shape.
+   Edit-distance alignment, so a missed or extra pluck does not shift every later verdict. */
+function checkArpeggio(events, expected, opts = {}) {
+  const exp = expected.map((m, i) => ({ m, string: 6 - i, idx: i })).filter(e => e.m != null);
+  const ev = events, E = exp.length, V = ev.length;
+  const judge = (want, got, ev) => {
+    if (got == null) return 'dead';
+    const d = got - want;
+    if (Math.abs(d - 12 * Math.round(d / 12)) < 0.5 && (opts.pc || Math.abs(d) < 12.5)) return 'ok';   // same note an octave off: the engine's octave guess, not a playing error
+    if (Math.abs(d) >= 0.5 && ev && ev.S && ev.S[Math.round(want)] >= 0.55 * ev.top) return 'ok';   // the sound also fits the intended note well
+    if (Math.abs(d) < 0.5) return 'ok';
+    if (Math.abs(d) <= 3.5) return d > 0 ? 'sharp' : 'flat';
+    return 'wrong';
+  };
+  const cost = (i, j) => { const v = judge(exp[i].m, ev[j].midi, ev[j]); return v === 'ok' ? 0 : v === 'dead' ? 0.6 : v === 'wrong' ? 1.6 : 0.8; };
+  const D = Array.from({ length: E + 1 }, () => new Float32Array(V + 1)), P = Array.from({ length: E + 1 }, () => new Int8Array(V + 1));
+  for (let i = 1; i <= E; i++) { D[i][0] = i * 1.0; P[i][0] = 1; }
+  for (let j = 1; j <= V; j++) { D[0][j] = j * 0.9; P[0][j] = 2; }
+  for (let i = 1; i <= E; i++) for (let j = 1; j <= V; j++) {
+    const a = D[i-1][j-1] + cost(i-1, j-1), b = D[i-1][j] + 1.0, c = D[i][j-1] + 0.9;   // match / string not heard / extra sound
+    if (a <= b && a <= c) { D[i][j] = a; P[i][j] = 0; } else if (b <= c) { D[i][j] = b; P[i][j] = 1; } else { D[i][j] = c; P[i][j] = 2; }
+  }
+  const res = exp.map(e => ({ string: e.string, idx: e.idx, want: e.m, got: undefined, verdict: 'missing' }));
+  let i = E, j = V;
+  while (i > 0 || j > 0) {
+    const p = P[i][j];
+    if (i > 0 && j > 0 && p === 0) { res[i-1].got = ev[j-1].midi; res[i-1].verdict = judge(exp[i-1].m, ev[j-1].midi, ev[j-1]); i--; j--; }
+    else if (i > 0 && (j === 0 || p === 1)) { res[i-1].verdict = 'dead'; i--; }      // no sound for this string at all = muted
+    else j--;
+  }
+  return res;
+}
+
+/* A melody or scale: same alignment, verdict per note (idx = position in the melody) */
+function checkNotes(events, wants, opts = {}) { return checkArpeggio(events, wants, opts); }
+
+/* Timing: match each expected beat to the nearest onset */
+function checkTiming(ons, beats, latency = 0, tol = 0.06) {
+  return beats.map(b => {
+    let best = null; for (const o of ons) { const d = o.t - latency - b; if (Math.abs(d) < 0.25 && (!best || Math.abs(d) < Math.abs(best))) best = d; }
+    return { beat: b, off: best, verdict: best == null ? 'miss' : Math.abs(best) <= tol ? 'ok' : best > 0 ? 'late' : 'early' };
+  });
+}
+
+/* Track pitch over time from an onset (for bends, slides, vibrato) */
+function pitchTrack(x, sr, s, dur = 1.2) {
+  const out = []; for (let t = 0.04; t < dur; t += 0.02) { const st = s + Math.round(t * sr); if (st + 1024 + sr / 70 >= x.length) break;
+    const r = yin(x, sr, st); out.push(r.f > 0 && r.conf > 0.75 ? ftom(r.f) : null); }
+  return out;
+}
+function checkBend(x, sr, s, fromMidi, semis) {
+  const tr = pitchTrack(x, sr, s, 1.6).filter(v => v != null && Math.abs(v - fromMidi) < 4);
+  if (tr.length < 5) return { ok: false, reason: 'nosound' };
+  const peak = Math.max(...tr), cents = Math.round((peak - fromMidi) * 100), target = semis * 100;
+  return { ok: Math.abs(cents - target) <= 30, cents, target, diff: cents - target };
+}
+
+/* Tuner read on a live window */
+function tunerRead(x, sr, gate) {
+  if (x.length < 2048 + sr / 70) return null; const st = x.length - 1024 - Math.ceil(sr / 70) - 2;
+  if (rms(x, st, 1024) < (gate ?? 0.002)) return null;
+  const r = yin(x, sr, st, 1024); if (!r.f || r.conf < 0.85) return null;
+  return { f: r.f, midi: ftom(r.f) };
+}
+
+const BASIC_ = 0;
+const BASIC = ['C', 'D', 'E', 'F', 'G', 'A', 'Am', 'Bm', 'Dm', 'Em'];
+const Ear = { BASIC, notch, N12, TUNE, CHORDS, chordMidis, mtof, ftom, decimate, yin, rms, fft, mag, noteEnergy, predict, toChroma, cos,
+  verifyChord, onsets, notePitch, noteEvents, checkArpeggio, checkNotes, checkTiming, pitchTrack, checkBend, tunerRead };
+root.Ear = Ear; if (typeof module !== 'undefined') module.exports = Ear;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Giáo trình của Thầy. Mỗi bài: loại bài tập (type), tham số, lời giảng (teach) và ngưỡng đạt. */
+window.LESSONS = (function () {
+  const T = [40, 45, 50, 55, 59, 64];                 // dây 6..1
+  const n = (s, f) => ({ m: T[6 - s] + f, s, f });    // nốt theo dây/ngăn
+  // Âm giai Đô trưởng thế mở
+  const cMaj = [n(5,3), n(4,0), n(4,2), n(4,3), n(3,0), n(3,2), n(2,0), n(2,1)];
+  // La thứ ngũ cung thế 1 (ngăn 5)
+  const amp = [n(6,5), n(6,8), n(5,5), n(5,7), n(4,5), n(4,7), n(3,5), n(3,7), n(2,5), n(2,8), n(1,5), n(1,8)];
+  const lick1 = [n(2,8), n(2,5), n(3,7), n(3,5), n(4,7), n(3,5), n(3,7)];
+  const lick2 = [n(1,5), n(2,8), n(2,5), n(3,7), n(2,5), n(3,7), n(3,5), n(4,7)];
+  const solo8 = [n(3,5), n(3,7), n(2,5), n(2,8), n(1,5), n(2,8), n(2,5), n(3,7), n(3,5), n(4,7), n(4,5), n(5,7)];
+  return [
+    { id: 'tune', ph: 1, title: 'Chỉnh dây đàn', type: 'tune',
+      teach: 'Đàn lệch dây thì tai không thể học đúng. Buổi tập nào cũng bắt đầu bằng chỉnh dây. Gảy từng dây buông, thầy báo cao hay thấp. Kim vào giữa và giữ được một giây là đạt.' },
+    { id: 'c-em-am', ph: 1, title: 'Hợp âm Em và Am', type: 'chord', chords: ['Em', 'Am'],
+      teach: 'Hai hợp âm dễ nhất, dùng trong rất nhiều bài. Bấm theo hình, quạt một lần từ dây trầm xuống. Nếu chưa chuẩn, thầy sẽ bảo bạn gảy từng dây để tìm đúng dây sai.' },
+    { id: 'c-cgd', ph: 1, title: 'Hợp âm C, G, D', type: 'chord', chords: ['C', 'G', 'D'],
+      teach: 'Ba hợp âm trưởng nền tảng. Với C và D, đừng gảy dây 6 (và dây 5 với D). Ngón tay phải cong như cầm quả trứng để không chạm dây bên cạnh.' },
+    { id: 'ch-am-em', ph: 1, title: 'Đổi Am ↔ Em theo nhịp', type: 'change', chords: ['Am', 'Em'], bpm: 60, bars: 8, sub: 1,
+      teach: 'Quạt xuống đúng mỗi tiếng click, mỗi ô nhịp 4 lần, đổi hợp âm ở phách 1. Quan trọng nhất là KHÔNG dừng nhịp, kể cả khi bấm chưa kịp đẹp.' },
+    { id: 'ch-c-g', ph: 1, title: 'Đổi C ↔ G theo nhịp', type: 'change', chords: ['C', 'G'], bpm: 60, bars: 8, sub: 1,
+      teach: 'C sang G là lần đổi khó với người mới. Mẹo: ngón 1 rời dây 2 sớm, ở ngay phách 4 của ô trước.' },
+    { id: 'c-f', ph: 1, title: 'Hợp âm chặn F', type: 'chord', chords: ['F'],
+      teach: 'Ngón 1 chặn cả 6 dây ở ngăn 1, hơi nghiêng sang cạnh ngón. Khuỷu tay thả lỏng, dùng sức kéo của cánh tay chứ không bóp ngón cái. Rè vài tuần đầu là bình thường.' },
+    { id: 'ch-loop1', ph: 1, title: 'Vòng C – G – Am – F', type: 'change', chords: ['C', 'G', 'Am', 'F'], bpm: 60, bars: 8, sub: 1,
+      teach: 'Vòng hợp âm phổ biến nhất của nhạc pop (bậc I – V – vi – IV). Thuộc vòng này là đệm được hàng trăm bài.' },
+    { id: 'rh-8', ph: 1, title: 'Quạt xuống – lên đều tay', type: 'change', chords: ['G', 'G', 'C', 'C'], bpm: 60, bars: 4, sub: 2,
+      teach: 'Mỗi phách quạt 2 lần: xuống đúng click, lên ở giữa hai click. Tay phải đưa đều như con lắc, kể cả lúc không chạm dây.' },
+
+    { id: 'q-theory', ph: 2, title: 'Bậc hợp âm trong giọng', type: 'quiz', mode: 'theory', count: 10,
+      teach: 'Mỗi giọng có 6 hợp âm “nhà”: I, ii, iii, IV, V, vi. Ví dụ giọng G: I = G, IV = C, V = D, vi = Em. Hiểu bậc thì đổi giọng hay đoán hợp âm đều có logic.' },
+    { id: 'q-quality', ph: 2, title: 'Nghe trưởng hay thứ', type: 'quiz', mode: 'quality', count: 10,
+      teach: 'Hợp âm trưởng nghe sáng, thứ nghe tối, buồn. Đây là kỹ năng tai đầu tiên để đệm không cần tab.' },
+    { id: 'ch-loop-g', ph: 2, title: 'Vòng I–V–vi–IV ở giọng G', type: 'change', chords: ['G', 'D', 'Em', 'C'], bpm: 65, bars: 8, sub: 1,
+      teach: 'Cùng vòng bậc như bài trước nhưng ở giọng G. Vừa đánh vừa đọc thầm “một – năm – sáu – bốn”.' },
+
+    { id: 'q-degree', ph: 3, title: 'Nghe bậc hợp âm', type: 'quiz', mode: 'degree', count: 12,
+      teach: 'Thầy đánh hợp âm chủ (I) để định giọng, rồi một hợp âm khác. Bạn đoán bậc: I, IV, V hay vi. Đây chính là cách người đệm giỏi nghe bài hát.' },
+    { id: 'tonic', ph: 3, title: 'Tìm nốt chủ', type: 'tonic', rounds: 4,
+      teach: 'Thầy đánh một vòng hợp âm ở một giọng bất kỳ. Bạn mò trên dây 6 hoặc dây 5 tìm nốt nghe “yên” nhất, rồi đàn nốt đó cho thầy nghe. Nốt đó là tên giọng của bài.' },
+    { id: 'echo-c', ph: 3, title: 'Nghe và đệm lại (giọng C)', type: 'echo', key: 'C', pool: [0, 3, 4, 5], bars: 4, bpm: 70,
+      teach: 'Thầy đánh 4 ô nhịp, mỗi ô một hợp âm trong số C, F, G, Am. Bạn nghe rồi đệm lại đúng như vậy. Mỗi ô quạt 4 lần theo click. Nên đeo tai nghe.' },
+    { id: 'echo-g', ph: 3, title: 'Nghe và đệm lại (giọng G)', type: 'echo', key: 'G', pool: [0, 3, 4, 5], bars: 4, bpm: 70,
+      teach: 'Giống bài trước, ở giọng G: G, C, D, Em. Hãy nghe bè trầm đi lên hay đi xuống để đoán.' },
+
+    { id: 'sc-c', ph: 4, title: 'Âm giai Đô trưởng', type: 'notes', notes: cMaj, bpm: 60,
+      teach: 'Đô Rê Mi Fa Sol La Si Đô, mỗi click một nốt. Vừa đàn vừa hát theo tên nốt. Thầy nghe từng nốt và báo nốt nào sai.' },
+    { id: 'q-note', ph: 4, title: 'Nghe bậc nốt', type: 'quiz', mode: 'note', count: 12,
+      teach: 'Thầy đánh hợp âm chủ, rồi một nốt. Bạn đoán đó là Đô, Rê, Mi… Kỹ năng này giúp mò giai điệu bằng tai.' },
+    { id: 'echo-m3', ph: 4, title: 'Nghe và đàn lại giai điệu 3 nốt', type: 'echo', kind: 'melody', len: 3, pool: [60, 62, 64, 65, 67], bpm: 60,
+      teach: 'Thầy đàn 3 nốt. Bạn mò trên dây 2 và dây 3 rồi đàn lại. Đàn sai cao độ thầy sẽ chỉ nốt nào sai. Đàn ở quãng tám khác cũng được tính đúng.' },
+    { id: 'echo-m5', ph: 4, title: 'Giai điệu 5 nốt', type: 'echo', kind: 'melody', len: 5, pool: [60, 62, 64, 65, 67, 69], bpm: 60,
+      teach: 'Dài hơn một chút. Hát thầm lại giai điệu trước khi tìm trên đàn.' },
+
+    { id: 'pent', ph: 5, title: 'Ngũ cung La thứ thế 1', type: 'notes', notes: amp, bpm: 70,
+      teach: 'Thế tay quan trọng nhất để solo. Ngón 1 ở ngăn 5, ngón 3 hoặc 4 ở ngăn 7–8. Đi lên đều theo click.' },
+    { id: 'bend2', ph: 5, title: 'Bend một cung', type: 'bend', s: 3, f: 7, semis: 2,
+      teach: 'Bấm dây 3 ngăn 7 bằng ngón 3, ngón 1 và 2 đặt phía sau hỗ trợ. Gảy rồi đẩy dây lên cho tới khi cao bằng nốt ngăn 9. Thầy đo độ cao, sai số cho phép 30 cent.' },
+    { id: 'bend1', ph: 5, title: 'Bend nửa cung', type: 'bend', s: 2, f: 8, semis: 1,
+      teach: 'Dây 2 ngăn 8, đẩy nhẹ lên nửa cung (bằng ngăn 9). Bend nửa cung khó hơn vì dễ đẩy quá tay.' },
+    { id: 'lick1', ph: 5, title: 'Câu lick 1', type: 'notes', notes: lick1, bpm: 70,
+      teach: 'Một câu lick ngũ cung kinh điển. Chơi chậm và rõ từng nốt trước khi tăng tốc.' },
+
+    { id: 'lick2', ph: 6, title: 'Câu lick 2', type: 'notes', notes: lick2, bpm: 75,
+      teach: 'Câu này đi từ dây 1 xuống dây 4 và kết ở nốt gốc. Kết câu ở nốt gốc làm câu solo nghe trọn vẹn.' },
+    { id: 'solo8', ph: 6, title: 'Đoạn solo 12 nốt', type: 'notes', notes: solo8, bpm: 70,
+      teach: 'Đoạn solo ngắn hoàn chỉnh. Khi đạt, tăng dần tốc độ 5 BPM mỗi lần.' },
+    { id: 'improv', ph: 6, title: 'Ứng tác 20 giây trên La thứ', type: 'improv', root: 9, scale: [0, 3, 5, 7, 10], secs: 20,
+      teach: 'Tự do chơi trong ngũ cung La thứ suốt 20 giây. Thầy đếm xem bao nhiêu nốt nằm trong thang âm và bạn có kết câu ở nốt La không.' },
+  ];
+})();
+
+</script>
+<script>
+/* Thầy: lessons, microphone, takes, grading and feedback. Needs window.Ear, window.LESSONS, window.GLAudio. */
+(function () {
+const A = window.GLAudio, E = window.Ear, LS = A.LS, L = window.LESSONS;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const SOLF = { C: 'Đô', D: 'Rê', E: 'Mi', F: 'Fa', G: 'Sol', A: 'La', B: 'Si' };
+const nn = m => E.N12[((Math.round(m) % 12) + 12) % 12];
+const nnv = m => { const n = nn(m); return SOLF[n] ? `${n} (${SOLF[n]})` : n; };
+const cfg = Object.assign({ lat: null, phones: false }, LS.get('cfg', {}));
+const prog = LS.get('prog', {});
+const saveCfg = () => LS.set('cfg', cfg), saveProg = () => LS.set('prog', prog);
+const P = id => prog[id] || (prog[id] = { best: 0, passed: false, tries: 0 });
+const PHASES = ['', 'Nền tay & nhịp', 'Hiểu hòa âm', 'Đệm bằng tai', 'Cần đàn & giai điệu', 'Ngũ cung & lead', 'Solo'];
+
+/* ================= microphone ================= */
+const Mic = { on: false, sr: 48000, ring: null, size: 0, w: 0, level: 0 };
+Mic.start = async function () {
+  const ctx = A.ac();
+  if (!window.isSecureContext) throw new Error('insecure');
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('nosupport');
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+  Mic.sr = ctx.sampleRate; Mic.size = Math.round(ctx.sampleRate * 40); Mic.ring = new Float32Array(Mic.size);
+  const src = ctx.createMediaStreamSource(stream), sink = ctx.createGain(); sink.gain.value = 0; sink.connect(ctx.destination);
+  const push = (d, frame) => {
+    let e = 0; for (let i = 0; i < d.length; i++) { Mic.ring[(frame + i) % Mic.size] = d[i]; e += d[i] * d[i]; }
+    Mic.w = Math.max(Mic.w, frame + d.length); Mic.level = Math.sqrt(e / d.length);
+  };
+  if (ctx.audioWorklet && window.AudioWorkletNode) {
+    const code = "class C extends AudioWorkletProcessor{constructor(){super();this.b=new Float32Array(1024);this.n=0;this.f=0}process(i){const c=i[0]&&i[0][0];if(c){if(this.n===0)this.f=currentFrame;this.b.set(c,this.n);this.n+=c.length;if(this.n>=1024){this.port.postMessage({f:this.f,d:this.b.slice(0,this.n)});this.n=0}}return true}}registerProcessor('cap',C)";
+    const url = URL.createObjectURL(new Blob([code], { type: 'application/javascript' }));
+    await ctx.audioWorklet.addModule(url);
+    const node = new AudioWorkletNode(ctx, 'cap'); node.port.onmessage = e => push(e.data.d, e.data.f);
+    src.connect(node); node.connect(sink);
+  } else {
+    const sp = ctx.createScriptProcessor(2048, 1, 1);
+    sp.onaudioprocess = e => push(new Float32Array(e.inputBuffer.getChannelData(0)), Math.round(ctx.currentTime * ctx.sampleRate) - 2048);
+    src.connect(sp); sp.connect(sink);
+  }
+  Mic.stream = stream; Mic.on = true;
+};
+Mic.get = function (t0, t1) {
+  let f0 = Math.round(t0 * Mic.sr), f1 = Math.round(t1 * Mic.sr);
+  f1 = Math.min(f1, Mic.w); f0 = Math.max(f0, Mic.w - Mic.size + 1, 0);
+  const out = new Float32Array(Math.max(0, f1 - f0));
+  for (let i = 0; i < out.length; i++) out[i] = Mic.ring[(f0 + i) % Mic.size];
+  return out;
+};
+Mic.latest = sec => { const t1 = Mic.w / Mic.sr; return Mic.get(t1 - sec, t1); };
+Mic.waitUntil = t => new Promise(res => { const chk = () => (Mic.w / Mic.sr >= t ? res() : setTimeout(chk, 40)); chk(); });
+
+/* ================= sounds ================= */
+function click(t, acc) {   // soft-attack pure tone: the listening engine ignores it
+  const c = A.ac(), o = c.createOscillator(), g = c.createGain();
+  o.frequency.value = acc ? 2400 : 1600; g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(acc ? 0.45 : 0.3, t + 0.004);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07); o.connect(g); g.connect(A.master()); o.start(t); o.stop(t + 0.08);
+}
+function burst(t) {         // broadband pulse used to measure the speaker → mic delay
+  const c = A.ac(), n = Math.round(c.sampleRate * 0.012), b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+  const s = c.createBufferSource(), g = c.createGain(); s.buffer = b; g.gain.value = 0.9; s.connect(g); g.connect(A.master()); s.start(t);
+}
+const now = () => A.ac().currentTime;
+const chordPlay = (name, when = 0, vol = 0.3) => E.chordMidis(name).forEach((m, i, arr) => {
+  if (m == null) return; const k = arr.slice(0, i).filter(v => v != null).length; A.pluck(m, when + k * 0.025, vol);
+});
+
+/* ================= takes: schedule clicks, record, cut the audio ================= */
+let busy = false, cancelFlag = false;
+function lat() { return cfg.lat ?? 0.12; }
+async function take(o) {
+  const ctx = A.ac(), spb = 60 / o.bpm, bpb = o.bpb || 4, ci = o.countIn ?? bpb;
+  await new Promise(r => setTimeout(r, 0)); cancelFlag = false;
+  const t0 = ctx.currentTime + 0.35, start = t0 + ci * spb, n = o.beats;
+  if (o.clicks !== false) for (let k = 0; k < ci + n; k++) click(t0 + k * spb, k % bpb === 0);
+  else for (let k = 0; k < ci; k++) click(t0 + k * spb, k % bpb === 0);
+  const end = start + n * spb + (o.tail ?? 0.6);
+  await new Promise(res => { const tick = () => { const now = ctx.currentTime; if (o.onTick) { try { o.onTick(now, start, spb, ci, t0); } catch (e) { cancelFlag = true; } } if (now >= end || cancelFlag) res(); else requestAnimationFrame(tick); }; tick(); });
+  if (cancelFlag) return null;
+  const from = start - 0.35 + lat(), to = end + lat();
+  await Mic.waitUntil(to);
+  const raw = Mic.get(from, to), d = E.decimate(raw, Mic.sr);
+  const rel = t => t - from + lat();          // a scheduled time → where its sound lands in the recording
+  return { x: d.x, sr: d.sr, from, start, spb, rel, peak: raw.reduce((m, v) => Math.max(m, Math.abs(v)), 0) };
+}
+const beatTimes = (r, nBeats, sub = 1) => { const out = []; for (let k = 0; k < nBeats * sub; k++) out.push(r.rel(r.start + k * r.spb / sub)); return out; };
+
+/* ================= latency calibration ================= */
+async function calibrate(statusEl) {
+  const ctx = A.ac(), t0 = ctx.currentTime + 0.5, times = [];
+  for (let k = 0; k < 6; k++) { burst(t0 + k * 0.55); times.push(t0 + k * 0.55); }
+  statusEl.textContent = 'Đang phát 6 tiếng “xẹt” và tự đo…';
+  await Mic.waitUntil(t0 + 3.9);
+  const from = t0 - 0.2, raw = Mic.get(from, t0 + 3.9), d = E.decimate(raw, Mic.sr), on = E.onsets(d.x, d.sr, { minGap: 0.2 });
+  const lats = times.map(t => { const r = t - from; const o = on.find(q => q.t > r - 0.01 && q.t < r + 0.5); return o ? o.t - r : null; }).filter(v => v != null);
+  if (lats.length >= 4) { lats.sort((a, b) => a - b); cfg.lat = lats[Math.floor(lats.length / 2)]; saveCfg(); return true; }
+  return false;
+}
+async function calibrateTap(statusEl) {
+  statusEl.textContent = 'Quạt đàn đúng theo 8 tiếng click sau 4 tiếng đếm.';
+  const old = cfg.lat; cfg.lat = 0;
+  const r = await take({ bpm: 80, beats: 8 }); cfg.lat = old;
+  if (!r) return false;
+  const on = E.onsets(r.x, r.sr), bt = beatTimes(r, 8);
+  const offs = bt.map(b => { const o = on.find(q => Math.abs(q.t - b - 0.12) < 0.3); return o ? o.t - b : null; }).filter(v => v != null).sort((a, b) => a - b);
+  if (offs.length < 5) return false;
+  cfg.lat = Math.max(0, offs[Math.floor(offs.length / 2)]); saveCfg(); return true;
+}
+
+/* ================= chord diagram ================= */
+function chordSVG(name, marks = {}) {
+  const fr = E.CHORDS[name]; const played = fr.filter(v => v != null && v > 0); const lo = Math.min(...played, 99), hi = Math.max(...played, 1);
+  const base = hi > 4 ? lo : 1, W = 132, H = 150, x0 = 18, dx = 19, y0 = 30, dy = 22;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Hình bấm ${name}"><g stroke="var(--ink)" stroke-width="1">`;
+  for (let i = 0; i < 6; i++) s += `<line x1="${x0 + i * dx}" y1="${y0}" x2="${x0 + i * dx}" y2="${y0 + 5 * dy}"/>`;
+  for (let j = 0; j <= 5; j++) s += `<line x1="${x0}" y1="${y0 + j * dy}" x2="${x0 + 5 * dx}" y2="${y0 + j * dy}" ${j === 0 && base === 1 ? 'stroke-width="4"' : ''}/>`;
+  s += '</g>';
+  if (base > 1) s += `<text x="${x0 + 5 * dx + 6}" y="${y0 + dy * 0.7}" font-size="11" fill="var(--muted)" font-family="var(--f-mono)">${base}</text>`;
+  fr.forEach((f, i) => {
+    const str = 6 - i, x = x0 + i * dx, mk = marks[str], col = mk === 'bad' ? 'var(--bad)' : mk === 'ok' ? 'var(--good)' : 'var(--ink)';
+    if (f == null) s += `<text x="${x}" y="${y0 - 9}" text-anchor="middle" font-size="12" fill="var(--muted)">×</text>`;
+    else if (f === 0) s += `<circle cx="${x}" cy="${y0 - 12}" r="5" fill="none" stroke="${col}" stroke-width="${mk ? 2.5 : 1.3}"/>`;
+    else s += `<circle cx="${x}" cy="${y0 + (f - base + 0.5) * dy}" r="7.5" fill="${col}"/>`;
+    s += `<text x="${x}" y="${H - 4}" text-anchor="middle" font-size="10" fill="${mk === 'bad' ? 'var(--bad)' : 'var(--muted)'}" font-family="var(--f-mono)">${str}</text>`;
+  });
+  return s + '</svg>';
+}
+function tabLine(notes, marks = []) {
+  return '<div class="tabline">' + notes.map((q, i) => `<span class="tn ${marks[i] || ''}"><b>${q.f}</b><small>dây ${q.s}</small></span>`).join('') + '</div>';
+}
+
+/* ================= feedback helpers ================= */
+function stringTip(chord, row) {
+  const s = row.string, f = E.CHORDS[chord][6 - s];
+  if (row.verdict === 'dead' || row.verdict === 'missing') return f === 0
+    ? `Dây ${s} (để buông) bị câm: một ngón ở dây bên cạnh đang chạm vào nó. Dựng ngón cong hơn, bấm bằng đầu ngón.`
+    : `Dây ${s} (ngăn ${f}) bị câm hoặc rất nhỏ: ấn chặt hơn và đặt ngón sát thanh phím ngăn ${f}.`;
+  if (row.verdict === 'sharp' || row.verdict === 'flat') {
+    const d = Math.round(row.got - row.want), hi = d > 0;
+    return f === 0 ? `Dây ${s} buông nghe ${hi ? 'cao' : 'thấp'} hơn ${Math.abs(d)} nửa cung: dây chưa chỉnh đúng, hãy vào bài “Chỉnh dây”.`
+      : `Dây ${s} nghe ${hi ? 'cao' : 'thấp'} hơn ${Math.abs(d)} nửa cung: ngón đang ở ngăn ${f + d}, cần đặt ở ngăn ${f}.`;
+  }
+  if (row.verdict === 'wrong') return `Dây ${s} ra nốt ${nnv(row.got)} thay vì ${nnv(row.want)}: xem lại hình bấm.`;
+  return '';
+}
+function timingSummary(res, sub) {
+  const hit = res.filter(r => r.off != null), ok = res.filter(r => r.verdict === 'ok').length;
+  const mean = hit.length ? hit.reduce((a, r) => a + r.off, 0) / hit.length : 0;
+  const msgs = [];
+  if (res.length - hit.length > 0) msgs.push(`Có ${res.length - hit.length} lần quạt thầy không nghe thấy. Có thể bạn bị ngắt nhịp khi đổi hợp âm.`);
+  if (mean < -0.025) msgs.push(`Bạn hay đánh vội, sớm trung bình ${Math.round(-mean * 1000)} ms. Thả lỏng, chờ tiếng click rồi mới quạt.`);
+  else if (mean > 0.025) msgs.push(`Bạn hay đánh chậm, trễ trung bình ${Math.round(mean * 1000)} ms. Thường là do tay trái chưa kịp bấm xong.`);
+  return { ok, total: res.length, mean, msgs };
+}
+
+/* ================= UI ================= */
+const root = $('thay');
+function render(html) { root.innerHTML = html; root.scrollIntoView({ block: 'start' }); window.scrollTo({ top: 0 }); }
+function nextLesson() { return L.find(l => !P(l.id).passed) || L[L.length - 1]; }
+function chip(l) { const p = P(l.id); return p.passed ? '<span class="chip ok">Đạt</span>' : p.tries ? '<span class="chip warn">Đang học</span>' : '<span class="chip">Chưa học</span>'; }
+function micBadge() { return Mic.on ? '<span class="chip ok">Micro đang bật</span>' : '<span class="chip">Micro tắt</span>'; }
+
+function home() {
+  const nx = nextLesson(), done = L.filter(l => P(l.id).passed).length;
+  let h = `<div class="card teacher"><div class="t-head"><span class="avatar" aria-hidden="true">T</span><div><span class="eyebrow">Thầy</span><h2>${done ? 'Chào bạn, tập tiếp nhé.' : 'Chào bạn, thầy sẽ nghe bạn đàn.'}</h2></div></div>
+    <p>Mỗi bài: thầy giảng, đàn mẫu, bạn đàn, thầy nghe và chỉ ra chỗ sai cụ thể. Đạt thì qua bài, chưa đạt thì thầy giảm tốc độ cho bạn tập lại.</p>
+    <div class="row">${micBadge()}<span class="chip ${cfg.lat != null ? 'ok' : ''}">${cfg.lat != null ? 'Độ trễ ' + Math.round(cfg.lat * 1000) + ' ms' : 'Chưa đo độ trễ'}</span><span class="chip">${done}/${L.length} bài đạt</span></div>
+    <div class="row"><button class="btn primary" data-act="open" data-id="${nx.id}">Học tiếp: ${esc(nx.title)} →</button>
+    <button class="btn" data-act="setup">${Mic.on ? 'Thiết lập' : 'Bật micro & thiết lập'}</button></div></div>`;
+  for (let ph = 1; ph <= 6; ph++) {
+    h += `<div class="lesson-group"><span class="eyebrow">Giai đoạn ${ph}</span><h3>${PHASES[ph]}</h3>`;
+    L.filter(l => l.ph === ph).forEach(l => { const p = P(l.id);
+      h += `<button class="lesson-row" data-act="open" data-id="${l.id}"><span>${esc(l.title)}</span><span class="row" style="gap:6px">${p.best ? `<span class="mono muted">${p.best}%</span>` : ''}${chip(l)}</span></button>`; });
+    h += '</div>';
+  }
+  render(h);
+}
+
+function setup() {
+  render(`<button class="btn back" data-act="home">← Danh sách bài</button>
+  <div class="card"><h2>Thiết lập</h2>
+    <ol class="steps">
+      <li><b>Bật micro.</b> Đặt điện thoại cách đàn 30–50 cm, micro (đáy máy) hướng về lỗ thoát âm.
+        <div class="row"><button class="btn primary" data-act="mic">${Mic.on ? 'Micro đã bật' : 'Bật micro'}</button><span class="meter"><i id="lvl"></i></span></div>
+        <p class="muted small" id="micMsg">Gảy thử một dây, thanh mức âm phải nhảy lên.</p></li>
+      <li><b>Bạn có đeo tai nghe không?</b> Có tai nghe thì tiếng thầy đàn mẫu không lọt vào micro, chấm chính xác hơn.
+        <div class="seg"><button data-act="phones" data-v="0" aria-pressed="${!cfg.phones}">Loa ngoài</button><button data-act="phones" data-v="1" aria-pressed="${cfg.phones}">Tai nghe</button></div></li>
+      <li><b>Đo độ trễ.</b> Điện thoại nào cũng có độ trễ giữa loa và micro. Thầy cần biết để chấm nhịp đúng.
+        <div class="row"><button class="btn" data-act="cal">${cfg.phones ? 'Đo bằng cách quạt theo click' : 'Tự đo (để loa ngoài)'}</button><span class="mono" id="latV">${cfg.lat != null ? Math.round(cfg.lat * 1000) + ' ms' : '–'}</span></div>
+        <p class="muted small" id="calMsg"></p></li>
+    </ol>
+    <button class="btn primary" data-act="open" data-id="tune">Xong, sang chỉnh dây →</button></div>`);
+  meterLoop();
+}
+let meterOn = false;
+function meterLoop() { if (meterOn) return; meterOn = true; const f = () => { const el = $('lvl'); if (!el) { meterOn = false; return; } el.style.width = Math.min(100, Mic.level * 600) + '%'; requestAnimationFrame(f); }; f(); }
+
+async function ensureMic(msgEl) {
+  if (Mic.on) return true;
+  try { await Mic.start(); return true; }
+  catch (e) {
+    const m = e.message === 'insecure' ? 'Trình duyệt chỉ cho dùng micro khi app mở qua địa chỉ https (ví dụ trang GitHub Pages). Hãy mở app từ địa chỉ đó.'
+      : e.message === 'nosupport' ? 'Trình duyệt này không hỗ trợ micro. Hãy dùng Chrome bản mới.'
+      : (e.name === 'NotAllowedError' ? 'Bạn chưa cho phép dùng micro. Vào biểu tượng ổ khóa cạnh địa chỉ trang → Quyền → Micro → Cho phép, rồi tải lại trang.' : 'Không bật được micro: ' + e.message);
+    if (msgEl) { msgEl.textContent = m; msgEl.className = 'small bad'; } else alert(m);
+    return false;
+  }
+}
+
+/* ---------- lesson page ---------- */
+let cur = null;
+function openLesson(id) {
+  cancelFlag = true; busy = false; clearInterval(tunerTimer);
+  const l = L.find(q => q.id === id); cur = { l, step: 0, state: {} }; const p = P(id);
+  if (l.bpm && !p.bpm) p.bpm = l.bpm;
+  const idx = L.indexOf(l);
+  render(`<button class="btn back" data-act="home">← Danh sách bài</button>
+  <div class="lesson-top"><span class="eyebrow">Giai đoạn ${l.ph} · Bài ${idx + 1}/${L.length}</span><h2>${esc(l.title)}</h2></div>
+  <div class="card teacher"><div class="t-head"><span class="avatar" aria-hidden="true">T</span><p id="say">${esc(l.teach)}</p></div></div>
+  <div class="card" id="ex"></div>
+  <div class="card" id="fb" hidden></div>`);
+  ({ tune: exTune, chord: exChord, change: exChange, quiz: exQuiz, echo: exEcho, tonic: exTonic, notes: exNotes, bend: exBend, improv: exImprov })[l.type]();
+}
+const say = t => { const el = $('say'); if (el) el.innerHTML = t; };
+function feedback(html, pass, score) {
+  const fb = $('fb'); fb.hidden = false; const l = cur.l, p = P(l.id);
+  p.tries++; if (score != null) p.best = Math.max(p.best, score); if (pass) p.passed = true; saveProg();
+  const idx = L.indexOf(l), nx = L[idx + 1];
+  fb.innerHTML = `<div class="verdict ${pass ? 'ok' : 'no'}">${pass ? 'Đạt' : 'Chưa đạt'}${score != null ? ` · ${score}%` : ''}</div>${html}
+    <div class="row"><button class="btn" data-act="retry">Tập lại</button>${l.bpm ? `<button class="btn" data-act="slower">Chậm lại (−10 BPM)</button>` : ''}${pass && nx ? `<button class="btn primary" data-act="open" data-id="${nx.id}">Bài tiếp: ${esc(nx.title)} →</button>` : ''}</div>`;
+  fb.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function startBtn(label = 'Bắt đầu, thầy nghe') { return `<button class="btn primary big" data-act="go">${label}</button>`; }
+function needMicGuard() { if (!Mic.on) { say('Bạn cần bật micro trước. Bấm “Bắt đầu”, máy sẽ hỏi quyền micro.'); } }
+
+/* ---------- 1. tuner ---------- */
+let tunerTimer = null;
+function exTune() {
+  const done = cur.state.done = {};
+  $('ex').innerHTML = `<div class="tuner"><div class="t-note" id="tNote">–</div><div class="t-scale"><i id="tNeedle"></i><b></b></div><div class="t-cents mono" id="tCents">Gảy một dây buông</div></div>
+    <div class="strings" id="tStr">${[6, 5, 4, 3, 2, 1].map(s => `<span data-s="${s}">${s}<small>${nn(E.TUNE[6 - s])}</small></span>`).join('')}</div>
+    <div class="row">${Mic.on ? '' : startBtn('Bật micro để chỉnh dây')}<button class="btn" data-act="ref">Nghe nốt chuẩn</button></div>`;
+  if (Mic.on) runTuner();
+  cur.go = async () => { if (await ensureMic()) { exTune(); } };
+}
+function runTuner() {
+  clearInterval(tunerTimer); let hold = { s: 0, n: 0 };
+  tunerTimer = setInterval(() => {
+    if (!$('tNote')) { clearInterval(tunerTimer); return; }
+    const raw = Mic.latest(0.16); const d = E.decimate(raw, Mic.sr); const r = E.tunerRead(d.x, d.sr, 0.003);
+    if (!r) return;
+    let s = 6, best = 99; E.TUNE.forEach((m, i) => { const dd = Math.abs(r.midi - m); if (dd < best) { best = dd; s = 6 - i; } });
+    if (best > 2.5) { $('tNote').textContent = nn(r.midi); $('tCents').textContent = 'Không gần dây buông nào. Gảy dây buông.'; return; }
+    const cents = Math.round((r.midi - E.TUNE[6 - s]) * 100);
+    $('tNote').textContent = `Dây ${s} · ${nn(E.TUNE[6 - s])}`;
+    $('tNeedle').style.left = (50 + Math.max(-50, Math.min(50, cents))) + '%';
+    $('tNeedle').className = Math.abs(cents) <= 6 ? 'in' : '';
+    $('tCents').textContent = Math.abs(cents) <= 6 ? 'Chuẩn' : cents < 0 ? `Thấp ${-cents} cent: vặn căng lên` : `Cao ${cents} cent: vặn chùng xuống`;
+    if (Math.abs(cents) <= 6) { hold = hold.s === s ? { s, n: hold.n + 1 } : { s, n: 1 }; if (hold.n >= 8 && !cur.state.done[s]) { cur.state.done[s] = 1; const el = document.querySelector(`#tStr [data-s="${s}"]`); if (el) el.classList.add('ok');
+      const k = Object.keys(cur.state.done).length; say(k < 6 ? `Dây ${s} đã chuẩn. Còn ${6 - k} dây.` : 'Cả 6 dây đã chuẩn. Đàn đã sẵn sàng.'); if (k === 6) { clearInterval(tunerTimer); feedback('<p>Đàn đã chỉnh xong. Kiểm tra lại mỗi buổi tập vì dây mới thường tụt dây nhanh.</p>', true, 100); } } }
+    else hold = { s: 0, n: 0 };
+  }, 70);
+}
+
+/* ---------- 2. chord ---------- */
+function exChord() {
+  const st = cur.state; st.i = st.i || 0; const name = cur.l.chords[st.i];
+  $('ex').innerHTML = `<div class="ex-chord"><div>${chordSVG(name)}</div><div class="ex-side"><div class="big-chord">${name}</div>
+    <p class="muted">Hợp âm ${st.i + 1}/${cur.l.chords.length}. Bấm thế tay, bấm “Bắt đầu”, rồi quạt <b>một lần</b> từ dây trầm xuống.</p>
+    <div class="row">${startBtn()}<button class="btn" data-act="demo">Nghe mẫu</button></div><div class="listen" id="lsn"></div></div></div>`;
+  cur.demo = () => chordPlay(name, now() + 0.05, 0.35);
+  cur.go = async () => {
+    if (!(await ensureMic())) return; $('fb').hidden = true;
+    const r = await take({ bpm: 60, beats: 3, countIn: 0, clicks: false, onTick: (now, start) => { const left = Math.ceil(start + 3 - now); $('lsn').innerHTML = `<span class="pulse"></span> Đang nghe… quạt đi (${Math.max(0, left)} s)`; } });
+    $('lsn').innerHTML = ''; if (!r) return;
+    const on = E.onsets(r.x, r.sr);
+    if (!on.length || r.peak < 0.01) { say('Thầy chưa nghe thấy tiếng đàn. Đưa điện thoại lại gần đàn hơn (30–50 cm) rồi thử lại.'); return; }
+    const o = on.reduce((a, b) => (b.strength > a.strength ? b : a), on[0]);
+    const v = E.verifyChord(r.x, r.sr, o.s, name);
+    if (v.ok) {
+      st.strumOk = true; say(`Quạt nghe ổn. Giờ gảy <b>chậm từng dây</b> để thầy kiểm tra kỹ từng dây của ${name}.`); arpCheck(name);
+    } else {
+      st.strumOk = false;
+      say(`Nghe chưa giống ${name}${v.best && v.best !== name ? `, gần với ${v.best} hơn` : ''}. Giờ gảy <b>chậm từng dây</b> để thầy tìm dây sai.`);
+      arpCheck(name);
+    }
+  };
+}
+function arpCheck(name) {
+  const strings = E.CHORDS[name].map((f, i) => f == null ? null : 6 - i).filter(Boolean);
+  $('ex').innerHTML = `<div class="ex-chord"><div id="dg">${chordSVG(name)}</div><div class="ex-side"><div class="big-chord">${name}</div>
+    <p>Giữ thế bấm. Sau 4 tiếng click, gảy lần lượt dây ${strings.join(' → ')}, mỗi click một dây.</p>
+    <div class="row">${startBtn('Gảy từng dây')}</div><div class="listen" id="lsn"></div></div></div>`;
+  cur.go = async () => {
+    if (!(await ensureMic())) return;
+    const r = await take({ bpm: 70, beats: strings.length + 1, onTick: (now, start, spb, ci) => { const k = Math.floor((now - start) / spb); $('lsn').innerHTML = now < start ? `Chuẩn bị… ${ci - Math.floor((now - (start - ci * spb)) / spb)}` : k < strings.length ? `<span class="pulse"></span> Gảy dây <b>${strings[k]}</b>` : 'Xong'; } });
+    $('lsn').innerHTML = ''; if (!r) return;
+    const ev = E.noteEvents(r.x, r.sr).filter(e => e.t > r.rel(r.start) - 0.2);
+    const res = E.checkArpeggio(ev, E.chordMidis(name));
+    const marks = {}; res.forEach(q => marks[q.string] = q.verdict === 'ok' ? 'ok' : 'bad');
+    $('dg').innerHTML = chordSVG(name, marks);
+    const bad = res.filter(q => q.verdict !== 'ok');
+    if (!ev.length) { say('Thầy không nghe thấy dây nào. Đưa điện thoại lại gần đàn rồi thử lại.'); return; }
+    if (!bad.length) {
+      if (cur.state.strumOk) { const st = cur.state; st.i++; st.strumOk = false;
+        if (st.i < cur.l.chords.length) { say(`Chuẩn từng dây, ${name} đạt. Sang hợp âm ${cur.l.chords[st.i]}.`); setTimeout(exChord, 1800); }
+        else { say('Tất cả hợp âm đều chuẩn, từng dây đều kêu rõ.'); feedback(`<p>Bạn đã bấm đúng ${cur.l.chords.join(', ')}. Bài tiếp theo sẽ luyện đổi qua lại giữa chúng theo nhịp.</p>`, true, 100); }
+        return; }
+      say(`Từng dây đều đúng. Có thể lúc quạt bạn lỡ gảy cả dây không thuộc hợp âm (dây có dấu ×). Quạt lại ${name} nhé.`); setTimeout(exChord, 2500); return; }
+    say(`Thầy tìm ra ${bad.length} dây chưa chuẩn (tô đỏ trên hình).`);
+    feedback('<ul class="tips">' + bad.map(q => `<li>${esc(stringTip(name, q))}</li>`).join('') + `</ul><p class="muted">Sửa xong bấm “Tập lại” để quạt lại ${name}.</p>`, false, Math.round(100 * (res.length - bad.length) / res.length));
+  };
+}
+
+/* ---------- 3. chord changes in time ---------- */
+function exChange() {
+  const l = cur.l, p = P(l.id), bpm = p.bpm || l.bpm, sub = l.sub || 1, bars = l.bars;
+  const seq = Array.from({ length: bars }, (_, b) => l.chords[b % l.chords.length]);
+  $('ex').innerHTML = `<div class="ex-change"><div class="now"><span class="big-chord" id="cNow">${seq[0]}</span><span class="muted" id="cNext">tiếp: ${seq[1] || ''}</span></div>
+    <div class="beats4" id="bt">${Array.from({ length: 4 }, () => '<i></i>').join('')}</div>
+    <div class="row mono"><span>${bpm} BPM</span><span>·</span><span>${bars} ô nhịp</span><span>·</span><span>${sub === 2 ? 'xuống–lên' : '1 lần/phách'}</span></div>
+    <div class="mini-diagrams">${[...new Set(l.chords)].map(c => `<figure><figcaption>${c}</figcaption>${chordSVG(c)}</figure>`).join('')}</div>
+    <div class="row">${startBtn()}<button class="btn" data-act="demo">Nghe mẫu 1 vòng</button></div><div class="listen" id="lsn"></div></div>`;
+  cur.demo = () => { const c = A.ac(), t = c.currentTime + 0.2, spb = 60 / bpm; l.chords.forEach((ch, b) => { for (let k = 0; k < 4 * sub; k++) { if (k === 0 || sub === 1 || true) chordPlay(ch, t + (b * 4 + k / sub) * spb, k % sub ? 0.15 : 0.28); click(t + (b * 4 + k / sub) * spb, k === 0); } }); };
+  cur.go = async () => {
+    if (!(await ensureMic())) return; $('fb').hidden = true;
+    const dots = [...$('bt').children];
+    const r = await take({ bpm, beats: bars * 4, onTick: (now, start, spb, ci) => {
+      const k = Math.floor((now - start) / spb), b = Math.floor(k / 4);
+      dots.forEach((d, i) => d.classList.toggle('on', ((k % 4) + 4) % 4 === i && now >= start - ci * spb));
+      if (now < start) { $('lsn').innerHTML = `Đếm vào… ${ci - Math.floor((now - (start - ci * spb)) / spb)}`; $('cNow').textContent = seq[0]; }
+      else if (b < bars) { $('lsn').innerHTML = '<span class="pulse"></span> Đang nghe'; $('cNow').textContent = seq[b]; $('cNext').textContent = 'tiếp: ' + (seq[b + 1] || 'hết'); }
+    } });
+    $('lsn').innerHTML = ''; dots.forEach(d => d.classList.remove('on')); if (!r) return;
+    const on = E.onsets(r.x, r.sr), bt = beatTimes(r, bars * 4, sub);
+    if (on.length < bt.length * 0.3) { say('Thầy nghe được rất ít tiếng quạt. Đưa điện thoại lại gần đàn, quạt mạnh và rõ hơn.'); return; }
+    const tim = E.checkTiming(on, bt, 0, sub === 2 ? 0.05 : 0.06), ts = timingSummary(tim, sub);
+    window.__last = { on, bt, tim, sr: r.sr };
+    // chord check at the first strum of each bar
+    const chordRes = seq.map((ch, b) => { const tb = bt[b * 4 * sub]; const o = on.find(q => Math.abs(q.t - tb) < 0.15); if (!o) return { ch, ok: null };
+      const v = E.verifyChord(r.x, r.sr, o.s, ch, { cands: [...E.BASIC, ...l.chords] }); return { ch, ok: v.ok, heard: v.best }; });
+    const cOk = chordRes.filter(c => c.ok).length, cTot = chordRes.filter(c => c.ok !== null).length || 1;
+    const firstBeat = tim.filter((_, i) => i % (4 * sub) === 0), other = tim.filter((_, i) => i % (4 * sub) !== 0);
+    const rate = a => a.length ? a.filter(q => q.verdict === 'ok').length / a.length : 1;
+    const msgs = ts.msgs.slice();
+    if (rate(firstBeat) < rate(other) - 0.2) msgs.push('Bạn trễ chủ yếu ở phách 1, lúc đổi hợp âm. Mẹo: nhấc ngón khỏi hợp âm cũ ngay ở phách 4, chấp nhận phách 4 hơi lỏng để vào phách 1 đúng giờ.');
+    const wrongC = chordRes.filter(c => c.ok === false);
+    if (wrongC.length) msgs.push(`Hợp âm chưa rõ ở ${wrongC.length} ô nhịp: ${wrongC.slice(0, 4).map(c => `${c.ch}${c.heard && c.heard !== c.ch ? ` (nghe như ${c.heard})` : ''}`).join(', ')}. Nếu cứ sai một hợp âm, hãy vào bài hợp âm đó và gảy từng dây cho thầy kiểm tra.`);
+    const tScore = ts.ok / ts.total, cScore = cOk / cTot, score = Math.round(100 * (0.6 * tScore + 0.4 * cScore));
+    const pass = tScore >= 0.75 && cScore >= 0.75;
+    if (pass) { msgs.push(`Rất tốt. Lần sau thầy tăng lên ${bpm + 5} BPM.`); p.bpm = bpm + 5; }
+    else if (tScore < 0.5) { msgs.push(`Thầy giảm xuống ${Math.max(40, bpm - 10)} BPM để bạn tập chắc tay trước.`); p.bpm = Math.max(40, bpm - 10); }
+    if (!msgs.length) msgs.push('Gần đạt rồi. Tập lại một lượt nữa.');
+    const strip = '<div class="timing">' + tim.map((q, i) => `<i class="${q.verdict}" title="${q.off == null ? 'không nghe' : Math.round(q.off * 1000) + ' ms'}" style="--o:${q.off == null ? 0 : Math.max(-1, Math.min(1, q.off / 0.12))}"></i>${(i + 1) % (4 * sub) === 0 ? '<b></b>' : ''}`).join('') + '</div>';
+    say(pass ? 'Đạt! Nhịp và hợp âm đều ổn.' : 'Thầy đã nghe xong, xem nhận xét bên dưới.');
+    feedback(`<p class="mono small">Đúng nhịp ${ts.ok}/${ts.total} · Hợp âm rõ ${cOk}/${cTot}</p>${strip}<p class="muted small">Mỗi vạch là một lần quạt. Xanh: đúng nhịp. Cam: sớm hoặc trễ (lệch lên là trễ). Xám: không nghe thấy.</p><ul class="tips">${msgs.map(m => `<li>${esc(m)}</li>`).join('')}</ul>`, pass, score);
+  };
+}
+
+/* ---------- 4. ear quizzes ---------- */
+const MAJ = [0, 2, 4, 5, 7, 9, 11], QUAL = ['', 'm', 'm', '', '', 'm'], ROM = ['I', 'ii', 'iii', 'IV', 'V', 'vi'];
+const KEYS = [['C', 0], ['G', 7], ['D', 2], ['A', 9], ['E', 4], ['F', 5]];
+function triad(pc, q, when, vol = 0.32) { let r = 40 + ((pc - 4 + 12) % 12); const th = q === 'm' ? 3 : 4; [r, r + 7, r + 12, r + 12 + th, r + 19].forEach((m, i) => A.pluck(m, when + i * 0.025, vol)); }
+function exQuiz() {
+  const l = cur.l, st = cur.state; st.n = st.n || 0; st.ok = st.ok || 0;
+  const K = KEYS[Math.floor(Math.random() * (l.mode === 'theory' ? 6 : 5))], kpc = K[1];
+  let q;
+  if (l.mode === 'quality') { const pc = Math.floor(Math.random() * 12), m = Math.random() < 0.5 ? 'm' : '';
+    q = { ans: m ? 'Thứ' : 'Trưởng', opts: ['Trưởng', 'Thứ'], play: () => triad(pc, m, now() + 0.05), reveal: E.N12[pc] + m }; }
+  else if (l.mode === 'degree') { const pool = [0, 3, 4, 5], i = pool[Math.floor(Math.random() * 4)];
+    q = { ans: ROM[i], opts: pool.map(j => ROM[j]), play: () => { const t = now(); triad(kpc, '', t + 0.05); triad((kpc + MAJ[i]) % 12, QUAL[i], t + 1.5); }, reveal: `${E.N12[(kpc + MAJ[i]) % 12]}${QUAL[i]} trong giọng ${K[0]}` }; }
+  else if (l.mode === 'note') { const names = ['Đô', 'Rê', 'Mi', 'Fa', 'Sol', 'La', 'Si'], i = Math.floor(Math.random() * 7), base = 52 + ((kpc - 4 + 12) % 12);
+    q = { ans: names[i], opts: names, play: () => { const t = now(); triad(kpc, '', t + 0.05, 0.22); A.pluck(base + MAJ[i], t + 1.4, 0.8); }, reveal: `${names[i]} = ${E.N12[(kpc + MAJ[i]) % 12]} trong giọng ${K[0]}` }; }
+  else { const i = Math.floor(Math.random() * 6), right = E.N12[(kpc + MAJ[i]) % 12] + QUAL[i];
+    const opts = new Set([right]); while (opts.size < 4) { const j = Math.floor(Math.random() * 6); opts.add(E.N12[(kpc + MAJ[j]) % 12] + QUAL[j]); }
+    q = { ans: right, opts: [...opts].sort(), prompt: `Giọng <b>${K[0]}</b>, bậc <b>${ROM[i]}</b> là hợp âm nào?`, play: null, reveal: `${ROM[i]} của ${K[0]} là ${right}` }; }
+  cur.q = q;
+  $('ex').innerHTML = `<p class="mono muted">Câu ${st.n + 1}/${l.count} · đúng ${st.ok}</p>${q.prompt ? `<p class="lead">${q.prompt}</p>` : `<div class="row"><button class="btn primary" data-act="qplay">▶ Nghe</button></div>`}
+    <div class="opts">${q.opts.map(o => `<button class="opt" data-act="qans" data-a="${esc(o)}">${esc(o)}</button>`).join('')}</div><div class="feedback" id="qfb"></div>`;
+  if (q.play) setTimeout(q.play, 200);
+}
+function quizAnswer(btn) {
+  const q = cur.q, st = cur.state; if (q.done) return; q.done = true;
+  const ok = btn.dataset.a === q.ans; btn.classList.add(ok ? 'right' : 'wrong'); if (!ok) document.querySelector(`.opt[data-a="${q.ans}"]`).classList.add('right');
+  st.n++; if (ok) st.ok++;
+  $('qfb').textContent = (ok ? 'Đúng. ' : 'Chưa đúng. ') + q.reveal; $('qfb').className = 'feedback ' + (ok ? 'ok' : 'no');
+  setTimeout(() => {
+    if (st.n < cur.l.count) exQuiz();
+    else { const sc = Math.round(100 * st.ok / st.n), pass = sc >= 80;
+      say(pass ? 'Tai bạn đã nghe tốt phần này.' : 'Chưa đủ 80%. Tập thêm vài lượt, mỗi ngày 10 phút là đủ.');
+      feedback(`<p>Đúng ${st.ok}/${st.n} câu.</p>`, pass, sc); cur.state = {}; }
+  }, 1300);
+}
+
+/* ---------- 5. listen-and-repeat (chords or melody) ---------- */
+function exEcho() {
+  const l = cur.l, st = cur.state; const isMel = l.kind === 'melody', bpm = (P(l.id).bpm || l.bpm);
+  if (!st.seq) {
+    if (isMel) { st.seq = []; for (let i = 0; i < l.len; i++) { let m; do { m = l.pool[Math.floor(Math.random() * l.pool.length)]; } while (i && m === st.seq[i - 1]); st.seq.push(m); } }
+    else { const kpc = KEYS.find(k => k[0] === l.key)[1]; st.seq = [0]; for (let i = 1; i < l.bars; i++) { let d; do { d = l.pool[Math.floor(Math.random() * l.pool.length)]; } while (d === st.seq[i - 1]); st.seq.push(d); }
+      st.names = st.seq.map(d => E.N12[(kpc + MAJ[d]) % 12] + QUAL[d]); }
+  }
+  const choices = isMel ? '' : `<p class="muted">Các hợp âm có thể có: ${l.pool.map(d => { const kpc = KEYS.find(k => k[0] === l.key)[1]; return E.N12[(kpc + MAJ[d]) % 12] + QUAL[d]; }).join(', ')}. Ô đầu luôn là ${l.key}.</p>`;
+  $('ex').innerHTML = `${choices}<div class="row"><button class="btn" data-act="demo">▶ Nghe thầy đàn (${isMel ? l.len + ' nốt' : l.bars + ' ô nhịp'})</button></div>
+    <p class="muted small">${cfg.phones ? '' : 'Bạn đang dùng loa ngoài: thầy chỉ đàn khi bạn bấm nghe, lúc bạn đàn thì thầy im lặng nên không sao.'}</p>
+    <div class="row">${startBtn('Đến lượt bạn')}</div><div class="listen" id="lsn"></div><div id="ans"></div>`;
+  cur.demo = () => { const c = A.ac(), t = c.currentTime + 0.25, spb = 60 / bpm;
+    if (isMel) st.seq.forEach((m, i) => A.pluck(m, t + i * spb, 0.8));
+    else st.names.forEach((ch, b) => { for (let k = 0; k < 4; k++) chordPlay(ch, t + (b * 4 + k) * spb, k ? 0.18 : 0.3); }); };
+  setTimeout(cur.demo, 300);
+  cur.go = async () => {
+    if (!(await ensureMic())) return; $('fb').hidden = true;
+    const beats = isMel ? st.seq.length : st.seq.length * 4;
+    const r = await take({ bpm, beats, onTick: (now, start, spb, ci) => { $('lsn').innerHTML = now < start ? `Đếm vào… ${ci - Math.floor((now - (start - ci * spb)) / spb)}` : `<span class="pulse"></span> ${isMel ? 'Đàn nốt ' + Math.min(st.seq.length, 1 + Math.floor((now - start) / spb)) : 'Ô nhịp ' + Math.min(st.seq.length, 1 + Math.floor((now - start) / spb / 4))}`; } });
+    $('lsn').innerHTML = ''; if (!r) return;
+    let html, pass, score;
+    if (isMel) {
+      const ev = E.noteEvents(r.x, r.sr).filter(e => e.t > r.rel(r.start) - 0.25);
+      const res = E.checkNotes(ev, st.seq, { pc: true }), ok = res.filter(q => q.verdict === 'ok').length;
+      score = Math.round(100 * ok / res.length); pass = ok === res.length;
+      html = `<div class="notes-res">${res.map((q, i) => `<span class="${q.verdict === 'ok' ? 'ok' : 'bad'}"><b>${nnv(q.want)}</b><small>${q.verdict === 'ok' ? 'đúng' : q.got == null ? 'không nghe' : 'bạn: ' + nnv(q.got)}</small></span>`).join('')}</div>
+        <ul class="tips">${res.filter(q => q.verdict !== 'ok' && q.got != null).slice(0, 3).map(q => { const d = Math.round(((q.got - q.want) % 12 + 18) % 12 - 6); return `<li>Nốt ${q.idx + 1}: bạn đàn ${nnv(q.got)}, đúng là ${nnv(q.want)} (${d > 0 ? 'thấp' : 'cao'} hơn ${Math.abs(d)} nửa cung, tức ${Math.abs(d)} ngăn ${d > 0 ? 'về phía đầu cần' : 'về phía thân đàn'}).</li>`; }).join('')}</ul>`;
+    } else {
+      const on = E.onsets(r.x, r.sr), bt = beatTimes(r, beats);
+      const res = st.names.map((ch, b) => { const o = on.find(q => Math.abs(q.t - bt[b * 4]) < 0.18) || on.find(q => q.t > bt[b * 4] - 0.1 && q.t < bt[b * 4] + 4 * r.spb - 0.2);
+        if (!o) return { ch, ok: false, heard: null }; const v = E.verifyChord(r.x, r.sr, o.s, ch, { cands: [...E.BASIC, ...st.names] }); return { ch, ok: v.ok, heard: v.best }; });
+      const ok = res.filter(q => q.ok).length; score = Math.round(100 * ok / res.length); pass = ok === res.length;
+      const kpc = KEYS.find(k => k[0] === l.key)[1];
+      html = `<div class="notes-res">${res.map((q, b) => `<span class="${q.ok ? 'ok' : 'bad'}"><b>${q.ch}</b><small>${ROM[st.seq[b]]} · ${q.ok ? 'đúng' : q.heard ? 'nghe như ' + q.heard : 'không nghe'}</small></span>`).join('')}</div>
+        <p class="muted small">Đáp án theo bậc: ${st.seq.map(d => ROM[d]).join(' – ')}. ${pass ? '' : 'Mẹo: V (' + E.N12[(kpc + 7) % 12] + ') nghe “căng”, muốn quay về I; vi (' + E.N12[(kpc + 9) % 12] + 'm) nghe buồn hơn hẳn; IV (' + E.N12[(kpc + 5) % 12] + ') nghe sáng và mở.'}</p>`;
+    }
+    say(pass ? 'Tai bạn bắt đúng hết. Câu sau sẽ là một đề mới.' : 'Nghe lại đề rồi thử lần nữa. Lần này hát thầm theo trước khi đàn.');
+    feedback(html, pass, score);
+    if (pass) cur.state = {};
+  };
+}
+
+/* ---------- 6. find the tonic ---------- */
+function exTonic() {
+  const st = cur.state; st.round = st.round || 0; st.ok = st.ok || 0;
+  const K = KEYS[Math.floor(Math.random() * 5)]; st.key = K;
+  $('ex').innerHTML = `<p class="mono muted">Lượt ${st.round + 1}/${cur.l.rounds} · đúng ${st.ok}</p>
+    <div class="row"><button class="btn" data-act="demo">▶ Nghe vòng hợp âm</button></div>
+    <p>Mò trên dây 6 hoặc dây 5. Khi tìm ra nốt “về nhà”, bấm “Bắt đầu” và gảy đúng nốt đó <b>một lần</b>.</p>
+    <div class="row">${startBtn()}</div><div class="listen" id="lsn"></div>`;
+  cur.demo = () => { const t = A.ac().currentTime + 0.2, kpc = K[1]; [[0, ''], [5, ''], [7, ''], [0, '']].forEach(([iv, q], i) => triad((kpc + iv) % 12, q, t + i * 1.1)); };
+  setTimeout(cur.demo, 300);
+  cur.go = async () => {
+    if (!(await ensureMic())) return;
+    const r = await take({ bpm: 60, beats: 3, countIn: 0, clicks: false, onTick: (now, start) => { $('lsn').innerHTML = `<span class="pulse"></span> Gảy nốt chủ (${Math.max(0, Math.ceil(start + 3 - now))} s)`; } });
+    $('lsn').innerHTML = ''; if (!r) return;
+    const ev = E.noteEvents(r.x, r.sr).filter(e => e.midi != null && e.t > r.rel(r.start) - 0.1);
+    if (!ev.length) { say('Thầy chưa nghe rõ nốt nào. Gảy mạnh và rõ hơn.'); return; }
+    window.__last = { ev: ev.map(e => [+e.t.toFixed(2), +e.midi.toFixed(2)]), startRel: r.rel(r.start), all: E.noteEvents(r.x, r.sr, { keepNull: true }).map(e => [+e.t.toFixed(2), e.midi && +e.midi.toFixed(2)]) };
+    const got = ev[0].midi, ok = ((Math.round(got) - st.key[1]) % 12 + 12) % 12 === 0;
+    st.round++; if (ok) st.ok++;
+    say(ok ? `Đúng! Giọng ${st.key[0]}, nốt chủ là ${nnv(st.key[1] + 48)}.` : `Bạn đàn ${nnv(got)}. Giọng này là ${st.key[0]}, nốt chủ ${nnv(st.key[1] + 48)}.`);
+    if (st.round < cur.l.rounds) setTimeout(exTonic, 2200);
+    else { const sc = Math.round(100 * st.ok / st.round); feedback(`<p>Tìm đúng ${st.ok}/${st.round} giọng.</p><p class="muted">Áp dụng: mỗi ngày bật một bài hát, tìm nốt chủ theo cách này trước khi đệm.</p>`, sc >= 75, sc); cur.state = {}; }
+  };
+}
+
+/* ---------- 7. scales, licks, solos ---------- */
+function exNotes() {
+  const l = cur.l, bpm = P(l.id).bpm || l.bpm;
+  $('ex').innerHTML = `<p class="muted">Số to là ngăn, chữ nhỏ là dây. Mỗi tiếng click một nốt, sau 4 tiếng đếm.</p>${tabLine(l.notes)}
+    <div class="row mono"><span>${bpm} BPM</span><span>·</span><span>${l.notes.length} nốt</span></div>
+    <div class="row">${startBtn()}<button class="btn" data-act="demo">Nghe mẫu</button></div><div class="listen" id="lsn"></div>`;
+  cur.demo = () => { const t = A.ac().currentTime + 0.2, spb = 60 / bpm; l.notes.forEach((q, i) => { A.pluck(q.m, t + i * spb, 0.8); click(t + i * spb, i % 4 === 0); }); };
+  cur.go = async () => {
+    if (!(await ensureMic())) return; $('fb').hidden = true;
+    const spans = [...document.querySelectorAll('.tabline .tn')];
+    const r = await take({ bpm, beats: l.notes.length, onTick: (now, start, spb, ci) => { const k = Math.floor((now - start) / spb); spans.forEach((s, i) => s.classList.toggle('cur', i === k));
+      $('lsn').innerHTML = now < start ? `Đếm vào… ${ci - Math.floor((now - (start - ci * spb)) / spb)}` : '<span class="pulse"></span> Đang nghe'; } });
+    $('lsn').innerHTML = ''; spans.forEach(s => s.classList.remove('cur')); if (!r) return;
+    const ev = E.noteEvents(r.x, r.sr).filter(e => e.t > r.rel(r.start) - 0.25);
+    if (!ev.length) { say('Thầy chưa nghe thấy nốt nào. Đưa điện thoại lại gần và gảy rõ hơn.'); return; }
+    const res = E.checkNotes(ev, l.notes.map(q => q.m)), ok = res.filter(q => q.verdict === 'ok').length;
+    window.__last = { ev: ev.map(e => ({ t: e.t, midi: e.midi })), res, x: r.x, sr: r.sr };
+    const tim = E.checkTiming(ev, beatTimes(r, l.notes.length), 0, 0.08), tOk = tim.filter(q => q.verdict === 'ok').length;
+    const score = Math.round(100 * (0.75 * ok / res.length + 0.25 * tOk / tim.length)), pass = ok / res.length >= 0.85 && tOk / tim.length >= 0.6;
+    const marks = res.map(q => q.verdict === 'ok' ? 'ok' : 'bad');
+    const tips = res.filter(q => q.verdict !== 'ok').slice(0, 4).map(q => { const t = l.notes[q.idx];
+      return q.got == null ? `Nốt ${q.idx + 1} (dây ${t.s} ngăn ${t.f}): thầy không nghe rõ. Ấn chặt và gảy rõ hơn.`
+        : `Nốt ${q.idx + 1}: cần ${nnv(q.want)} ở dây ${t.s} ngăn ${t.f}, bạn đàn ra ${nnv(q.got)}${Math.abs(q.got - q.want) < 3 ? ` (lệch ${Math.abs(Math.round(q.got - q.want))} ngăn)` : ''}.`; });
+    const ts = timingSummary(tim); tips.push(...ts.msgs);
+    if (pass) { tips.push(`Đạt. Lần sau thầy tăng lên ${bpm + 5} BPM.`); P(l.id).bpm = bpm + 5; }
+    else if (ok / res.length < 0.6) { P(l.id).bpm = Math.max(40, bpm - 10); tips.push(`Thầy giảm xuống ${P(l.id).bpm} BPM. Chậm mà đúng quan trọng hơn nhanh mà sai.`); }
+    say(pass ? 'Tốt lắm, các nốt đều đúng.' : 'Thầy đã đánh dấu các nốt sai bên dưới.');
+    feedback(`<p class="mono small">Nốt đúng ${ok}/${res.length} · Đúng nhịp ${tOk}/${tim.length}</p>${tabLine(l.notes, marks)}<ul class="tips">${tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`, pass, score);
+  };
+}
+
+/* ---------- 8. bends ---------- */
+function exBend() {
+  const l = cur.l, from = E.TUNE[6 - l.s] + l.f;
+  $('ex').innerHTML = `<p>Dây <b>${l.s}</b> ngăn <b>${l.f}</b> (${nnv(from)}) → bend lên <b>${l.semis === 2 ? 'một cung' : 'nửa cung'}</b> thành ${nnv(from + l.semis)}.</p>
+    <div class="bend-meter"><i id="bFill"></i><b id="bTarget"></b></div>
+    <div class="row">${startBtn()}<button class="btn" data-act="demo">Nghe nốt đích</button></div><div class="listen" id="lsn"></div>`;
+  $('bTarget').style.left = (l.semis / 3 * 100) + '%';
+  cur.demo = () => { const t = A.ac().currentTime + 0.1; A.pluck(from, t, 0.8); A.pluck(from + l.semis, t + 1.2, 0.8); };
+  cur.go = async () => {
+    if (!(await ensureMic())) return; $('fb').hidden = true;
+    const r = await take({ bpm: 60, beats: 4, countIn: 0, clicks: false, onTick: (now, start) => { $('lsn').innerHTML = `<span class="pulse"></span> Gảy và bend (${Math.max(0, Math.ceil(start + 4 - now))} s)`; } });
+    $('lsn').innerHTML = ''; if (!r) return;
+    const ev = E.noteEvents(r.x, r.sr).filter(e => e.midi != null && Math.abs(e.midi - from) < 1.5);
+    if (!ev.length) { say(`Thầy chưa nghe thấy nốt ${nnv(from)}. Kiểm tra bạn đang bấm dây ${l.s} ngăn ${l.f}.`); return; }
+    const b = E.checkBend(r.x, r.sr, ev[0].s, from, l.semis);
+    if (b.reason) { say('Tiếng tắt quá nhanh, thầy không đo được. Ấn chặt hơn để nốt ngân lâu.'); return; }
+    $('bFill').style.width = Math.max(0, Math.min(100, b.cents / 300 * 100)) + '%';
+    const msg = b.ok ? `Bend lên ${b.cents} cent, đúng cao độ.` : b.diff < 0 ? `Bend lên ${b.cents} cent, thiếu ${-b.diff} cent. Đẩy dây xa hơn, dùng cả cổ tay xoay chứ không chỉ ngón.` : `Bend lên ${b.cents} cent, quá ${b.diff} cent. Đẩy nhẹ hơn và nghe nốt đích trước khi bend.`;
+    say(msg);
+    feedback(`<p>${esc(msg)}</p><p class="muted small">Mục tiêu ${b.target} cent, sai số cho phép 30 cent.</p>`, b.ok, Math.max(0, Math.round(100 - Math.abs(b.diff) / 2)));
+  };
+}
+
+/* ---------- 9. improvisation ---------- */
+function exImprov() {
+  const l = cur.l;
+  $('ex').innerHTML = `<p>Chơi tự do trong ngũ cung ${E.N12[l.root]} thứ suốt ${l.secs} giây. Xem tab “Cần đàn” nếu quên thế tay. Click giữ nhịp 80 BPM.</p>
+    <div class="row">${startBtn()}</div><div class="listen" id="lsn"></div>`;
+  cur.go = async () => {
+    if (!(await ensureMic())) return; $('fb').hidden = true;
+    const beats = Math.round(l.secs * 80 / 60);
+    const r = await take({ bpm: 80, beats, onTick: (now, start, spb, ci) => { $('lsn').innerHTML = now < start ? `Đếm vào… ${ci - Math.floor((now - (start - ci * spb)) / spb)}` : `<span class="pulse"></span> Đang nghe (${Math.max(0, Math.ceil(start + beats * spb - now))} s)`; } });
+    $('lsn').innerHTML = ''; if (!r) return;
+    const ev = E.noteEvents(r.x, r.sr).filter(e => e.midi != null);
+    if (ev.length < 5) { say('Thầy nghe được quá ít nốt. Chơi nhiều nốt hơn nhé.'); return; }
+    const pcs = ev.map(e => ((Math.round(e.midi) - l.root) % 12 + 12) % 12), inS = pcs.filter(p => l.scale.includes(p)).length;
+    const endRoot = pcs[pcs.length - 1] === 0, pct = Math.round(100 * inS / pcs.length);
+    const out = [...new Set(ev.filter((e, i) => !l.scale.includes(pcs[i])).map(e => nn(e.midi)))];
+    const tips = [`${ev.length} nốt, ${pct}% nằm trong thang âm.`, endRoot ? 'Bạn kết câu ở nốt gốc, nghe rất trọn vẹn.' : `Nốt cuối là ${nnv(ev[ev.length - 1].midi)}. Thử kết câu ở nốt ${nnv(l.root + 57)} để nghe “về nhà”.`];
+    if (out.length) tips.push(`Các nốt ngoài thang âm: ${out.join(', ')}. Dùng chúng như nốt lướt qua, đừng dừng lâu trên chúng.`);
+    const pass = pct >= 85 && endRoot;
+    say(pass ? 'Một đoạn ứng tác rất ổn.' : 'Xem nhận xét rồi chơi lại một đoạn nữa.');
+    feedback(`<ul class="tips">${tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`, pass, pct);
+  };
+}
+
+/* ================= events ================= */
+root.addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return; const act = b.dataset.act;
+  if (act === 'home') { clearInterval(tunerTimer); cancelFlag = true; busy = false; home(); }
+  else if (act === 'open') { clearInterval(tunerTimer); openLesson(b.dataset.id); }
+  else if (act === 'setup') setup();
+  else if (act === 'mic') { if (await ensureMic($('micMsg'))) { b.textContent = 'Micro đã bật'; $('micMsg').textContent = 'Gảy thử một dây, thanh mức âm phải nhảy lên.'; $('micMsg').className = 'muted small'; } }
+  else if (act === 'phones') { cfg.phones = b.dataset.v === '1'; saveCfg(); setup(); }
+  else if (act === 'cal') { if (!(await ensureMic($('calMsg')))) return; if (busy) return; busy = true; b.disabled = true;
+    const ok = cfg.phones ? await calibrateTap($('calMsg')) : await calibrate($('calMsg'));
+    busy = false; b.disabled = false;
+    if (ok) { $('latV').textContent = Math.round(cfg.lat * 1000) + ' ms'; $('calMsg').textContent = 'Đã đo xong.'; }
+    else $('calMsg').textContent = cfg.phones ? 'Chưa đo được. Quạt mạnh, đúng theo click và thử lại.' : 'Micro không nghe rõ tiếng loa. Tăng âm lượng, bỏ tai nghe ra, hoặc chọn “Tai nghe” để đo bằng cách quạt.'; }
+  else if (act === 'go') { if (busy || !cur || !cur.go) return; busy = true; b.disabled = true; try { await cur.go(); } finally { busy = false; if (document.body.contains(b)) b.disabled = false; } }
+  else if (act === 'demo') { cur && cur.demo && cur.demo(); }
+  else if (act === 'ref') { { const t = now(); E.TUNE.forEach((m, i) => A.pluck(m, t + 0.1 + i * 0.7, 0.8)); } }
+  else if (act === 'retry') { $('fb').hidden = true; if (cur.l.type === 'chord') { exChord(); } else if (cur.l.type === 'quiz' || cur.l.type === 'tonic') { cur.state = {}; ({ quiz: exQuiz, tonic: exTonic })[cur.l.type](); } else if (cur.l.type === 'echo') { exEcho(); } else ({ change: exChange, notes: exNotes, bend: exBend, improv: exImprov, tune: exTune })[cur.l.type](); }
+  else if (act === 'slower') { const p = P(cur.l.id); p.bpm = Math.max(40, (p.bpm || cur.l.bpm) - 10); saveProg(); $('fb').hidden = true; ({ change: exChange, notes: exNotes, echo: exEcho })[cur.l.type](); }
+  else if (act === 'qplay') { cur.q && cur.q.play && cur.q.play(); }
+  else if (act === 'qans') quizAnswer(b);
+});
+document.addEventListener('visibilitychange', () => { if (document.hidden) cancelFlag = true; });
+home();
+window.Teacher = { Mic, take, calibrate, home, openLesson, cfg, prog, cur: () => cur };
+})();
+
+</script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});</script>
+</body></html>
